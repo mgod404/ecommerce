@@ -1,11 +1,7 @@
 import { React, useState } from "react";
-//import './home.scss';
 import './home.css';
 import NavbarComponent from '../../components/navbar';
-import DesktopProduct from '../../components/desktopProduct';
 import Product from '../../components/product';
-import { Container } from "react-bootstrap";
-
 
 
 const Home = () => {
