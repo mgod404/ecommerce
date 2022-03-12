@@ -3,4 +3,4 @@ frontend/node_modules
 media
 api/migrations
 api/__pycache__
-ecommerce/__pycache__
+ecommerce\__pycache__
