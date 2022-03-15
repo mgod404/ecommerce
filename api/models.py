@@ -37,7 +37,7 @@ class LaptopVariant(models.Model):
     memory = models.IntegerField()
     operating_system = models.CharField(max_length=10, blank=True)
     processor = models.CharField(max_length=20)
-    graphics_card = models.CharField(max_length=20, blank=True)
+    graphics_card = models.CharField(max_length=30, blank=True)
     picture = models.ImageField(upload_to=images_dir_path,null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     amount = models.IntegerField(default=0)
