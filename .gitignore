@@ -4,3 +4,4 @@ media
 api/migrations
 api/__pycache__
 ecommerce\__pycache__
+data
