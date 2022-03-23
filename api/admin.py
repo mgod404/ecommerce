@@ -1,8 +1,5 @@
 from django.contrib import admin
-from .models import ProductCategory, Product, SmartphoneVariant, LaptopVariant, TvVariant
+from .models import Product, OptionsTemplate
 
-admin.site.register(ProductCategory)
 admin.site.register(Product)
-admin.site.register(SmartphoneVariant)
-admin.site.register(LaptopVariant)
-admin.site.register(TvVariant)
+admin.site.register(OptionsTemplate)
