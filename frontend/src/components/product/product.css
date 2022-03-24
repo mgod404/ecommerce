@@ -1,0 +1,15 @@
+.options {
+    font-size: small;
+    color: grey;
+    margin: 0rem;
+    padding-left: 0rem;
+    list-style: none;
+}
+
+.product-card-body{
+    padding-left:2.5rem;
+}
+
+.text-dec {
+    text-decoration: none;
+}

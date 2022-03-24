@@ -1,7 +1,3 @@
-body {
-    color:darkslategray;
-}
-
 .wrapper-grid{
     display:grid;
     grid-template-columns: repeat(auto-fit, 27rem);

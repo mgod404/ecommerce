@@ -1,0 +1,28 @@
+.details-wrapper-grid{
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 27rem);
+    justify-content: center;
+    gap: 2rem;
+}
+
+.flex-container{
+    margin-top:2rem;
+    display:flex;
+    justify-content: center;
+}
+
+.product-description{
+    width: 56rem;
+}
+
+@media (max-width: 920px ){
+    .product-description{
+        width:27rem;
+    }
+}
+
+.product-details-options {
+    margin: 0rem;
+    list-style: none;
+}
