@@ -8,10 +8,10 @@ const Category = (props) => {
 
     const [productData, setProductData] = useState(null);
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/api/c/' + props.category + '/')
+        fetch(`http://127.0.0.1:8000/api/c/${props.category}/`)
         .then(res => res.json())
         .then(data => setProductData(data.results));
-    }, []);
+    }, [props]);
 
     return (
         <div>
