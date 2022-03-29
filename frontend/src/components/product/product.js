@@ -40,7 +40,7 @@ const Product = (props) => {
                     <Card.Img src={props.data.picture}/>
                     <Card.Body className='d-flex flex-column'>
                         <Card.Title className='product-card-body'>{props.data.brand} {props.data.model}</Card.Title>
-                            <div className='product-card-body'>{getProductOptions(props.data.options)}</div>
+                            <div className='product-card-body pb-2'>{getProductOptions(props.data.options)}</div>
                         <Row>
                             <Col className='row justify-content-center align-content-center'>{props.data.price} EUR</Col>
                             <Col>

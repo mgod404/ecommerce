@@ -1,18 +1,13 @@
-import { React, useState, useEffect, useContext } from "react";
+import { React, useState, useEffect } from "react";
 import './category.css';
 import NavbarComponent from '../../components/navbar/navbar';
 import Product from '../../components/product/product';
-import { CartContext } from "../../contexts/CartContext";
 
 
 
 const Category = (props) => {
-
-    const {cart} = useContext(CartContext);
-
-    useEffect(()=> console.log('Category here, cart is ' + JSON.stringify(cart)), [cart]);
-
     const [productData, setProductData] = useState(null);
+
     useEffect(() => {
         fetch(`http://127.0.0.1:8000/api/c/${props.category}/`)
         .then(res => res.json())

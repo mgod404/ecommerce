@@ -3,7 +3,9 @@ import {createContext, useEffect, useState} from 'react'
 export const CartContext = createContext();
 
 const CartContextProvider = (props) =>{
-    const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
+    const [cart, setCart] = useState(()=>
+        localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
+    );
     useEffect(() =>{
         localStorage.setItem('cart', JSON.stringify(cart));
     },[cart]);
@@ -18,6 +20,7 @@ const CartContextProvider = (props) =>{
         if(productInCartId === -1){
             newCart.push({
                 id: product.id, 
+                picture: product.picture,
                 brand: product.brand, 
                 model: product.model, 
                 price: product.price, 

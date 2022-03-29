@@ -38,7 +38,7 @@ const ProductDetails = () => {
                         <Card.Body className='d-flex flex-column'>
                             <Card.Title className='fs-1'>{productDetailsData.brand} {productDetailsData.model}</Card.Title>
                             <Card.Text className='fs-3'>SELECT OPTIONS</Card.Text>
-                            <div className='fs-4'>
+                            <div className='fs-4 pb-4'>
                                 {getProductOptions(productDetailsData.options)}
                             </div>
                             <Row>
