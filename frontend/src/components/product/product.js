@@ -1,9 +1,9 @@
-import {useState, React} from "react";
-import { useNavigate } from "react-router-dom";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Card, Button, Row, Col } from "react-bootstrap";
+import {useState, React} from "react"
+import { useNavigate } from "react-router-dom"
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { Card, Row, Col } from "react-bootstrap"
 import './product.css'
-
+import AddToCardBttnComponent from "../../components/addtocardbttn/addtocardbttn"
 
 const Product = (props) => {
 
@@ -34,46 +34,6 @@ const Product = (props) => {
 
     const navigate = useNavigate();
 
-    const addToCart = (productToAddToCart, productAmount=1) =>{
-        let cart = localStorage.getItem('cart');
-        if(cart){
-            cart = JSON.parse(cart);
-            const idIndex = cart.findIndex(product => product.id === productToAddToCart.id);
-            console.log(`idIndex is ${idIndex}`);
-            if(idIndex !== -1){
-                cart[idIndex].amount = cart[idIndex].amount + productAmount;
-                console.log('Old cart, Product found');
-                localStorage.setItem('cart', JSON.stringify(cart));
-            } else {
-                let passedData = {
-                    id: productToAddToCart.id,
-                    brand: productToAddToCart.brand,
-                    model: productToAddToCart.model,
-                    picture: productToAddToCart.picture,
-                    price: productToAddToCart.price,
-                    amount: productAmount
-                }
-                cart.push(passedData);
-                console.log('Old Cart, product not found');
-                localStorage.setItem('cart', JSON.stringify(cart));
-            }
-        } else {
-            let newCart = [];
-            let passedData = {
-                id: productToAddToCart.id,
-                brand: productToAddToCart.brand,
-                model: productToAddToCart.model,
-                picture: productToAddToCart.picture,
-                price: productToAddToCart.price,
-                amount: productAmount
-            }
-            newCart.push(passedData);
-            console.log('New Cart made and data pushed');
-            localStorage.setItem('cart',JSON.stringify(newCart));
-        }
-    }
-
-
     if(isDesktopScreen){
         return (
                 <Card onClick={() => navigate(`/p/${props.data.id}`)}>
@@ -84,14 +44,10 @@ const Product = (props) => {
                         <Row>
                             <Col className='row justify-content-center align-content-center'>{props.data.price} EUR</Col>
                             <Col>
-                                <Button id={props.data.id}
-                                        variant="primary" 
-                                        className='mt-auto' 
-                                        onClick={(event) =>{
-                                            event.stopPropagation();
-                                            addToCart(props.data);
-                                        }}>Add To Cart
-                                </Button>
+                                <AddToCardBttnComponent
+                                    id={props.data.id}
+                                    data={props.data}>
+                                </AddToCardBttnComponent>
                             </Col>
                         </Row>
                     </Card.Body>
@@ -111,14 +67,10 @@ const Product = (props) => {
                             <Card.Text>
                                 {getProductOptions(props.data.options)}
                             </Card.Text>
-                            <Button id={props.data.id}
-                                        variant="primary" 
-                                        className='mt-auto' 
-                                        onClick={(event) =>{
-                                            event.stopPropagation();
-                                            addToCart(props.data);
-                                        }}>Add To Cart
-                            </Button>
+                            <AddToCardBttnComponent 
+                                id={props.data.id}
+                                data={props.data}>
+                            </AddToCardBttnComponent>
                         </Card.Body>
                     </Col>
                 </Row>

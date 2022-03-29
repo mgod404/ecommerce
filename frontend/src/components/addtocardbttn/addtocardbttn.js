@@ -1,11 +1,20 @@
-import React from "react";
+import {React, useContext} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css'
-// import { Navbar, Container,Nav, NavDropdown } from "react-bootstrap";
+import { Button } from "react-bootstrap"
+import { CartContext } from "../../contexts/CartContext";
 
-const addToCardBttnComponent = () => {
+const AddToCardBttnComponent = (props) => {
+    const { addToCart } = useContext(CartContext); 
+
     return(
-        <Button onClick></Button>
+        <Button variant="primary" 
+                className='mt-auto' 
+                onClick={(event) =>{
+                    event.stopPropagation();
+                    addToCart(props.data);
+                }}>Add To Cart
+        </Button>
     )
 }
 
-export default addToCardBttnComponent;
+export default AddToCardBttnComponent;

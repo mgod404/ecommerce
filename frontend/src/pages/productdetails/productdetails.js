@@ -2,9 +2,10 @@ import { React, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import NavbarComponent from '../../components/navbar/navbar';
+import AddToCardBttnComponent from "../../components/addtocardbttn/addtocardbttn"
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Card, Button, Row, Col } from "react-bootstrap";
+import { Card, Row, Col } from "react-bootstrap";
 import './productdetails.css';
 
 const ProductDetails = () => {
@@ -12,7 +13,7 @@ const ProductDetails = () => {
 
     const [productDetailsData, setproductDetailsData] = useState(null);
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/api/p/' + params.productid + '/')
+        fetch(`http://127.0.0.1:8000/api/p/${params.productid}/`)
         .then(res => res.json())
         .then(data => setproductDetailsData(data));
     }, [params.productid]);
@@ -20,8 +21,9 @@ const ProductDetails = () => {
     const getProductOptions = (options) => {
         let content = [];
         Object.entries(options)
-            .forEach(([key, value]) => content.push(<ul className='product-details-options'>{key}: {value}</ul>));
-        console.log(content);
+            .forEach(([key, value], index) => content.push(
+                <ul className='product-details-options' key={index}>{key}: {value}</ul>
+                ));
         return content
     };
 
@@ -30,7 +32,7 @@ const ProductDetails = () => {
             <NavbarComponent></NavbarComponent>
             <div className="details-wrapper-grid">
                     <Card id="picture">
-                        <Card.Img src={'http://127.0.0.1:8000' + productDetailsData.picture} />
+                        <Card.Img src={`http://127.0.0.1:8000${productDetailsData.picture}`} />
                     </Card>
                     <Card className="text-center">
                         <Card.Body className='d-flex flex-column'>
@@ -44,14 +46,17 @@ const ProductDetails = () => {
                                     <Card.Text className='fs-3'>{productDetailsData.price} EUR</Card.Text>
                                 </Col>
                                 <Col>
-                                    <Button>Add To Cart</Button>
+                                    <AddToCardBttnComponent
+                                        id={productDetailsData.id}
+                                        data={productDetailsData}>
+                                    </AddToCardBttnComponent>
                                 </Col>
                             </Row>
                         </Card.Body>
                     </Card>
             </div>
             <div className="flex-container">
-                <Card className="product-description"><Card.Body><Card.Text>{productDetailsData.descriptions}</Card.Text></Card.Body></Card>
+                <Card className="product-description"><Card.Body><Card.Text>{productDetailsData.description}</Card.Text></Card.Body></Card>
             </div>
         </div>)
     );
