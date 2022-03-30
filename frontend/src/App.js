@@ -1,4 +1,3 @@
-import './App.css';
 import { BrowserRouter,Route,Routes } from 'react-router-dom';
 import Home from './pages/home/home.js';
 import Category from './pages/category/category.js';

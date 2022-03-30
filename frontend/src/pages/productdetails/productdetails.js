@@ -32,7 +32,7 @@ const ProductDetails = () => {
             <NavbarComponent></NavbarComponent>
             <div className="details-wrapper-grid">
                     <Card id="picture">
-                        <Card.Img src={`http://127.0.0.1:8000${productDetailsData.picture}`} />
+                        <Card.Img src={productDetailsData.picture} />
                     </Card>
                     <Card className="text-center">
                         <Card.Body className='d-flex flex-column'>
