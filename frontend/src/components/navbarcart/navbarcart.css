@@ -1,0 +1,3 @@
+.NavDropdown.Item:not(.nohover):hover{
+    background-color: white;
+}
