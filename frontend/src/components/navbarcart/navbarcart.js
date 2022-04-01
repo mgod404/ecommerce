@@ -2,27 +2,16 @@ import {React, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import "bootstrap-icons/font/bootstrap-icons.css"
-import {NavDropdown,Button, Image, FormSelect } from "react-bootstrap"
+import {NavDropdown,Button, Image, FormControl, InputGroup } from "react-bootstrap"
 import { CartContext } from "../../contexts/CartContext"
 
 const NavbarCartComponent = () => {
     const {cart, removeProductFromCart, setProductQuantity} = useContext(CartContext);
     const navigate = useNavigate();
 
-    const generateOptions = (quantity) => {
-        let content = [];
-        for(let i = 1; i <= 10; i++){
-            if(i === quantity){
-                continue;
-            }
-            content.push(<option value={i} key={i}>{i}</option>);
-        }
-        return content;
-    }
-
     const countTotal = () => {
         let sum = 0;
-        cart.forEach(element => sum= sum + (element.quantity * element.price));
+        cart.forEach(element => sum = sum + (element.quantity * element.price));
         return sum
     }
 
@@ -40,21 +29,22 @@ const NavbarCartComponent = () => {
                     </div>
                     <div 
                         onClick={() => navigate(`/p/${product.id}`)}
-                        className='overflow-hidden flex-fill ps-3 text-center'
+                        className='overflow-hidden flex-fill ps-3 d'
                         style={{width:'10rem'}}>
                         {product.brand} {product.model}
                     </div>
-                    <div 
-                        className='px-3'>
-                        <FormSelect 
-                            style={{width:'5rem'}}
-                            defaultValue={product.quantity} 
-                            onClick={(e)=> e.stopPropagation()}
-                            onChange={(e) =>{
-                                setProductQuantity(product.id, e.target.value);
-                            }}>
-                                {generateOptions(product.quantity)}
-                        </FormSelect>
+                    <div className='px-3'>
+                    <InputGroup className="mb-3">
+                        <FormControl
+                        style={{width:'3rem'}}
+                        placeholder={product.quantity}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) =>{
+                            setProductQuantity(product.id, e.target.value);
+                            e.target.value = '';
+                        }}
+                        />
+                    </InputGroup>
                     </div>
                     <div 
                         className="pe-3">
@@ -63,25 +53,29 @@ const NavbarCartComponent = () => {
                     <div>
                         <i 
                             className='bi bi-trash align-self-end'
-                            style={{width:'2rem'}}
-                            onClick={() =>{ 
+                            style={{width:'5rem'}}
+                            onClick={(e) =>{
+                                e.stopPropagation();
                                 removeProductFromCart(product.id)}}>
                         </i>
                     </div>
                 </NavDropdown.Item>
                 ))}
                 <NavDropdown.Divider />
-                <NavDropdown.Item className='d-flex flex-row justify-content-between'>
+                <NavDropdown.ItemText className='d-flex flex-row justify-content-between'>
                     <div className='flex-fill'>
                         <div className='text-center'>Total:</div>
                         <div className='text-center'>{countTotal()} EUR</div>
                     </div>
-                    <Button>Place an Order</Button>
-                </NavDropdown.Item>
+                    <Button onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/finalizeorder/`)
+                        }}>Place an Order</Button>
+                </NavDropdown.ItemText>
             </NavDropdown>)
                 : 
                 (<NavDropdown align='end' title="Cart" className='dropdown-menu-end'>
-                    <NavDropdown.Item>Cart is empty.</NavDropdown.Item>
+                    <NavDropdown.Item disabled>Cart is empty.</NavDropdown.Item>
                 </NavDropdown>
             ))
 } 

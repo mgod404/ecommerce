@@ -3,6 +3,7 @@ import Home from './pages/home/home.js';
 import Category from './pages/category/category.js';
 import ProductDetails from '../src/pages/productdetails/productdetails.js';
 import CartContextProvider from './contexts/CartContext';
+import OrderComponent from './pages/order/order.js';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
             <Route path='/smartphones' element={<Category category='Smartphone'/>}/>
             <Route path='/laptops' element={<Category category='Laptop'/>}/>
             <Route path='/p/:productid/' element={<ProductDetails/>}/>
+            <Route path='/finalizeorder' element={<OrderComponent/>}/>
         </Routes> 
       </BrowserRouter>
       </CartContextProvider>
