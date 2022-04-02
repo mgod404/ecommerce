@@ -4,9 +4,11 @@ import Category from './pages/category/category.js';
 import ProductDetails from '../src/pages/productdetails/productdetails.js';
 import CartContextProvider from './contexts/CartContext';
 import OrderComponent from './pages/order/order.js';
+import IsDesktopContextProvider from './contexts/IsDesktopScreenContext.js';
 
 function App() {
   return (
+      <IsDesktopContextProvider>
       <CartContextProvider>
       <BrowserRouter>
         <Routes>
@@ -18,6 +20,7 @@ function App() {
         </Routes> 
       </BrowserRouter>
       </CartContextProvider>
+      </IsDesktopContextProvider>
   );
 }
 

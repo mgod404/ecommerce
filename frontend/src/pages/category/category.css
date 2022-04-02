@@ -1,6 +1,6 @@
 .wrapper-grid{
     display:grid;
-    grid-template-columns: repeat(auto-fit, 28.5rem);
+    grid-template-columns: repeat(auto-fit, 23rem);
     justify-content: center;
     gap:0.1rem;
     margin-top:0.1rem;

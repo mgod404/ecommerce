@@ -2,7 +2,7 @@ import {React, useContext } from "react"
 import { CartContext } from "../../contexts/CartContext"
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Card, Col, Container, Row, InputGroup, FormControl, Form, Button } from "react-bootstrap";
+import { Card, Col, Row, InputGroup, FormControl, Form, Button } from "react-bootstrap";
 import './order.css';
 
 const OrderComponent = () => {
@@ -15,27 +15,26 @@ const OrderComponent = () => {
     }
 
     return(
-        <Container>
+        <div style={{maxWidth:'50rem'}}>
             <Col>
                 <Card className='m-2'>
                     {cart !== 0 ? (cart.map((product, index) => (
-                        <Card key={index}>
+                        <Card key={index} className='m-1'>
                             <Card.Body className='d-flex flex-row justify-content-between'>
-                                    <div>
+                                    <div className='d-flex flex-fill align-content-center justify-content-center flex-wrap'>
                                         <Card.Img 
                                             src={product.picture} 
-                                            style={{width: '4rem', height:'4rem'}}/>
+                                            style={{width: '3rem', height:'3rem'}}/>
                                     </div>
                                     <div className='d-flex flex-fill align-content-center justify-content-center flex-wrap'>
                                         <Card.Text 
-                                            className='fs-2'>
+                                            className='fs-5'>
                                                 {product.brand} {product.model}
                                         </Card.Text>
                                     </div>
-                                    <div className='d-flex align-content-center justify-content-center flex-wrap mx-2'>
+                                    <div style={{width:'3rem'}} className='d-flex align-content-center justify-content-center flex-wrap mx-2'>
                                         <InputGroup className="d-flex align-content-center flex-wrap">
                                             <FormControl
-                                            style={{width:'1rem'}}
                                             placeholder={product.quantity}
                                             onClick={(e) => e.stopPropagation()}
                                             onChange={(e) =>{
@@ -45,16 +44,17 @@ const OrderComponent = () => {
                                         </InputGroup>
                                     </div>
                                     <div className='d-flex align-content-center justify-content-center flex-wrap mx-2'>
-                                        <Card.Text className='fs-2'>{product.price}</Card.Text>
+                                        <Card.Text style={{width:'5rem'}}className='fs-5 justify-content-around'>{product.price}</Card.Text>
                                     </div>
-                                    <div className='d-flex align-content-center justify-content-center flex-wrap align-self-end'>
-                                    <i 
+                                    <div className='d-flex align-content-center justify-content-center flex-wrap mx-2'>
+                                        <Card.Text style={{width:'3rem'}}className='fs-5'>EUR</Card.Text>
+                                    </div>
+                                    <div className='d-flex align-content-center justify-content-center'>
+                                    <Button 
                                         className='bi bi-trash'
-                                        width='32'
-                                        height='32'
                                         onClick={() =>{ 
                                             removeProductFromCart(product.id)}}>
-                                    </i>
+                                    </Button>
                                     </div>
                             </Card.Body>
                         </Card>
@@ -121,7 +121,7 @@ const OrderComponent = () => {
                     </Card.Body>
                 </Card>
             </Col>
-        </Container>
+        </div>
     )
 }
 
