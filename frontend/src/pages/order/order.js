@@ -2,7 +2,7 @@ import {React, useContext } from "react"
 import { CartContext } from "../../contexts/CartContext"
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Card, Col, Container, Row, InputGroup, FormControl } from "react-bootstrap";
+import { Card, Col, Container, Row, InputGroup, FormControl, Form, Button } from "react-bootstrap";
 import './order.css';
 
 const OrderComponent = () => {
@@ -17,24 +17,23 @@ const OrderComponent = () => {
     return(
         <Container>
             <Col>
-                <Card>
+                <Card className='m-2'>
                     {cart !== 0 ? (cart.map((product, index) => (
                         <Card key={index}>
-                            <Card.Body>
-                                <Row>
-                                    <Col>
+                            <Card.Body className='d-flex flex-row justify-content-between'>
+                                    <div>
                                         <Card.Img 
                                             src={product.picture} 
                                             style={{width: '4rem', height:'4rem'}}/>
-                                    </Col>
-                                    <Col>
+                                    </div>
+                                    <div className='d-flex flex-fill align-content-center justify-content-center flex-wrap'>
                                         <Card.Text 
                                             className='fs-2'>
                                                 {product.brand} {product.model}
                                         </Card.Text>
-                                    </Col>
-                                    <Col>
-                                        <InputGroup className="mb-3">
+                                    </div>
+                                    <div className='d-flex align-content-center justify-content-center flex-wrap mx-2'>
+                                        <InputGroup className="d-flex align-content-center flex-wrap">
                                             <FormControl
                                             style={{width:'1rem'}}
                                             placeholder={product.quantity}
@@ -44,28 +43,82 @@ const OrderComponent = () => {
                                             }}
                                             />
                                         </InputGroup>
-                                    </Col>
-                                    <Col>
+                                    </div>
+                                    <div className='d-flex align-content-center justify-content-center flex-wrap mx-2'>
                                         <Card.Text className='fs-2'>{product.price}</Card.Text>
-                                    </Col>
-                                    <Col>
+                                    </div>
+                                    <div className='d-flex align-content-center justify-content-center flex-wrap align-self-end'>
                                     <i 
-                                        className='bi bi-trash align-self-end'
-                                        style={{width:'10rem'}}
+                                        className='bi bi-trash'
+                                        width='32'
+                                        height='32'
                                         onClick={() =>{ 
                                             removeProductFromCart(product.id)}}>
                                     </i>
-                                    </Col>
-                                </Row>
+                                    </div>
                             </Card.Body>
                         </Card>
                         ))): (<Card>EMPTY CART</Card>)}
-                        <Card>
-                            TOTAL: {countTotal()}
-                        </Card>
                 </Card>
-                <Card>
-                    Second Card, address details
+                <Card className='m-2'>
+                    <Card.Body>
+                        <div className='fs-2'>TOTAL: {countTotal()}</div>
+                    </Card.Body>
+                </Card>
+                <Card className='m-2'>
+                    <Card.Body>
+                        <Form>
+                            <Row className="mb-3">
+                                <Form.Group as={Col} controlId="formGridEmail">
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control type="email" placeholder="Enter email" />
+                                </Form.Group>
+
+                                <Form.Group as={Col} controlId="formGridName">
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control type="text" placeholder="Name" />
+                                </Form.Group>
+
+                                <Form.Group as={Col} controlId="formGridSurname">
+                                <Form.Label>Surname</Form.Label>
+                                <Form.Control type="text" placeholder="Surname" />
+                                </Form.Group>
+                            </Row>
+
+                            <Form.Group className="mb-3" controlId="formGridAddress1">
+                                <Form.Label>Address</Form.Label>
+                                <Form.Control placeholder="1234 Main St" />
+                            </Form.Group>
+
+                            <Row className="mb-3">
+                                <Form.Group as={Col} controlId="formGridCity">
+                                <Form.Label>City</Form.Label>
+                                <Form.Control />
+                                </Form.Group>
+
+                                <Form.Group as={Col} controlId="formGridState">
+                                <Form.Label>State</Form.Label>
+                                <Form.Select defaultValue="Choose...">
+                                    <option>Choose...</option>
+                                    <option>...</option>
+                                </Form.Select>
+                                </Form.Group>
+
+                                <Form.Group as={Col} controlId="formGridZip">
+                                <Form.Label>Zip</Form.Label>
+                                <Form.Control />
+                                </Form.Group>
+                            </Row>
+
+                            <Form.Group className="mb-3" id="formGridCheckbox">
+                                <Form.Check type="checkbox" label="I accept terms and conditions" />
+                            </Form.Group>
+
+                            <Button variant="primary" type="submit">
+                                Submit
+                            </Button>
+                        </Form>
+                    </Card.Body>
                 </Card>
             </Col>
         </Container>
