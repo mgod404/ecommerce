@@ -30,14 +30,12 @@ const CartContextProvider = (props) =>{
             return
         }
         newCart[productInCartId].quantity = parseInt(newCart[productInCartId].quantity) + quantity;
-        console.log(newCart[productInCartId].quantity);
         setCart(newCart);
     }
 
     const setProductQuantity = (productId, quantity=1) => {
         let newCart = [...cart];
         let productInCartId = newCart.findIndex(product => product.id === productId);
-        console.log(`Quantity ${quantity}, newCart[] ${newCart[productInCartId]}`);
         newCart[productInCartId].quantity = quantity;
         setCart(newCart);
     }

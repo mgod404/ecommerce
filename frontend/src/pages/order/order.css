@@ -1,0 +1,21 @@
+.order-fontsize { 
+    font-size: 130%;
+}
+.order-price-width{
+    width:5rem;
+}
+.order-currency-width{
+    width:3rem;
+}
+
+@media (max-width: 600px ){
+    .order-fontsize{
+        font-size:80%;
+    }
+    .order-price-width{
+        width:3rem;
+    }
+    .order-currency-width{
+        width:2rem;
+    }
+}

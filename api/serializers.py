@@ -1,4 +1,4 @@
-from .models import Product
+from .models import Product, Order
 from rest_framework import serializers
 
 
@@ -11,3 +11,9 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
+class NewOrderSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Order
+        exclude = ['total_price']

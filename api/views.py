@@ -2,8 +2,8 @@ from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Product
-from .serializers import ProductDetailsSerializer
+from .models import Product, Order
+from .serializers import ProductDetailsSerializer, NewOrderSerializer
 
 def routes(request):
     pass
@@ -26,3 +26,8 @@ class CategoryView(generics.ListAPIView):
     def get_queryset(self):
         category = self.kwargs['category']
         return Product.objects.filter(category=category)
+
+class NewOrderView(generics.CreateAPIView):
+    serializer_class = NewOrderSerializer
+    def perform_create(self, serializer):
+        return serializer.save()

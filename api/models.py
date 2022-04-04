@@ -1,4 +1,5 @@
 from django.db import models
+from sqlalchemy import false
 
 def images_dir_path(instance, filename):
     return f'imaged{filename}'
@@ -20,3 +21,16 @@ class OptionsTemplate(models.Model):
     options = models.JSONField()
     def __str__(self):
         return self.category
+
+class Order(models.Model):
+    products_ordered = models.ManyToManyField(Product, blank=False)
+    total_price = models.DecimalField(max_digits=9, decimal_places=2)
+    date_of_order = models.DateTimeField(auto_now_add=True)
+    # email = models.EmailField()
+    # name = models.CharField(max_length=30)
+    # surname = models.CharField(max_length=40)
+    # address = models.CharField(max_length=80)
+    # city = models.CharField(max_length=30)
+    # state = models.CharField(max_length=20)
+    # zip = models.CharField(max_length=10)
+
