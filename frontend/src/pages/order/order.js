@@ -15,31 +15,49 @@ const OrderComponent = () => {
     }
 
     const [form, setForm] = useState({
-        cart: cart,
+        cart: cart.map(product => ({ productId: product.id, productQuantity: product.quantity})),
         email: '',
         name: '',
         surname: '',
-        Address: '',
-        City: '',
-        State: '',
-        Zip: '',
+        address: '',
+        city: '',
+        state: '',
+        zip: '',
         acceptedTerms: false,
     });
 
-    const handleChange = (e) =>{
-        setForm({[e.target.name]:e.target.value});
-    }
+    const handleChange = (e) => setForm({...form, [e.target.name]: e.target.value});
+    const handleTermsAndConditionsChange = (e) => 
+        e.target.checked ? 
+        setForm({...form, acceptedTerms: true}) : 
+        setForm({...form, acceptedTerms:false});
 
-    useEffect(()=>console.log(form),[form]);
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        fetch(`http://127.0.0.1:8000/api/neworder/`, {
+    const postCart = async (orderId) => {
+        const requestCart = cart.map((product) => ({order:orderId, quantity: product.quantity, product: product.id}))
+        const response = await fetch(`http://127.0.0.1:8000/api/productordered/`, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(cart)
+            body: JSON.stringify(requestCart)
         })
-        .then(()=> console.log('New Order Added'));
+        const data = await response.json();
+        console.log(data);
+    }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try{
+            const response = await fetch(`http://127.0.0.1:8000/api/neworder/`, {
+                method: 'POST',
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(form)
+            })
+            if(response.status === 201){
+                const data = await response.json();
+                postCart(data.id);
+            }
+        } catch (err){
+            console.log(err);
+        }
+        
     }
 
     return(
@@ -104,7 +122,7 @@ const OrderComponent = () => {
                 </Card>
                 <Card>
                     <Card.Body>
-                        <div className='fs-3'>TOTAL: {countTotal()} EUR</div>
+                        <div className='fs-3 text-secondary'>TOTAL: {countTotal()} EUR</div>
                     </Card.Body>
                 </Card>
                 <Card>
@@ -114,6 +132,7 @@ const OrderComponent = () => {
                                 <Form.Group as={Col} controlId="formGridEmail">
                                 <Form.Label>Email</Form.Label>
                                 <Form.Control 
+                                    required
                                     type="email" 
                                     name='email' 
                                     placeholder="Enter email" 
@@ -123,6 +142,7 @@ const OrderComponent = () => {
                                 <Form.Group as={Col} controlId="formGridName">
                                 <Form.Label>Name</Form.Label>
                                 <Form.Control 
+                                    required
                                     type="text" 
                                     name='name' 
                                     placeholder="Name" 
@@ -132,6 +152,7 @@ const OrderComponent = () => {
                                 <Form.Group as={Col} controlId="formGridSurname">
                                 <Form.Label>Surname</Form.Label>
                                 <Form.Control 
+                                    required
                                     type="text" 
                                     name='surname'
                                     placeholder="Surname" 
@@ -142,6 +163,7 @@ const OrderComponent = () => {
                             <Form.Group className="mb-3" controlId="formGridAddress1">
                                 <Form.Label>Address</Form.Label>
                                 <Form.Control 
+                                    required
                                     type='text' 
                                     name='address'
                                     placeholder="1234 Main St" 
@@ -151,23 +173,40 @@ const OrderComponent = () => {
                             <Row className="mb-3">
                                 <Form.Group as={Col} controlId="formGridCity">
                                 <Form.Label>City</Form.Label>
-                                <Form.Control />
+                                <Form.Control 
+                                    required
+                                    type='text'
+                                    name='city'
+                                    onChange={handleChange}/>
                                 </Form.Group>
 
                                 <Form.Group as={Col} controlId="formGridState">
                                 <Form.Label>State</Form.Label>
-                                <Form.Control />
+                                <Form.Control 
+                                    required
+                                    type='text'
+                                    name='state'
+                                    onChange={handleChange}/>
                                 </Form.Group>
 
                                 <Form.Group as={Col} controlId="formGridZip">
                                 <Form.Label>Zip</Form.Label>
-                                <Form.Control />
+                                <Form.Control 
+                                    required
+                                    type='text'
+                                    name='zip'
+                                    onChange={handleChange}/>
                                 </Form.Group>
 
                             </Row>
 
                             <Form.Group className="mb-3" id="formGridCheckbox">
-                                <Form.Check type="checkbox" label="I accept terms and conditions" />
+                                <Form.Check 
+                                    required
+                                    type="checkbox" 
+                                    label="I accept terms and conditions" 
+                                    name='acceptedTerms'
+                                    onChange={handleTermsAndConditionsChange}/>
                             </Form.Group>
 
                             <Button variant="primary" type="submit">

@@ -12,7 +12,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=7, decimal_places=2)
     picture = models.ImageField(upload_to=images_dir_path,null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    amount = models.IntegerField(default=0)
+    quantity = models.PositiveIntegerField(default=0)
     def __str__(self):
         return f'{self.category}, {self.brand} {self.model}'
 
@@ -23,14 +23,21 @@ class OptionsTemplate(models.Model):
         return self.category
 
 class Order(models.Model):
-    products_ordered = models.ManyToManyField(Product, blank=False)
-    total_price = models.DecimalField(max_digits=9, decimal_places=2)
+    total_price = models.DecimalField(max_digits=9, decimal_places=2, default=0)
     date_of_order = models.DateTimeField(auto_now_add=True)
-    # email = models.EmailField()
-    # name = models.CharField(max_length=30)
-    # surname = models.CharField(max_length=40)
-    # address = models.CharField(max_length=80)
-    # city = models.CharField(max_length=30)
-    # state = models.CharField(max_length=20)
-    # zip = models.CharField(max_length=10)
+    email = models.EmailField()
+    name = models.CharField(max_length=30)
+    surname = models.CharField(max_length=40)
+    address = models.CharField(max_length=80)
+    city = models.CharField(max_length=30)
+    state = models.CharField(max_length=20)
+    zip = models.CharField(max_length=10)
+    def __str__(self):
+        return f'{self.email} {self.date_of_order}'
 
+class ProductOrdered(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    quantity = models.PositiveIntegerField()
+    def __str__(self):
+        return f'{self.order}, {self.product}, {self.quantity}'
