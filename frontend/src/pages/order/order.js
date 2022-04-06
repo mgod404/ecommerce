@@ -15,7 +15,6 @@ const OrderComponent = () => {
     }
 
     const [form, setForm] = useState({
-        cart: cart.map(product => ({ productId: product.id, productQuantity: product.quantity})),
         email: '',
         name: '',
         surname: '',
