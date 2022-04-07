@@ -1,7 +1,2 @@
 venv
 frontend/node_modules
-MEDIA
-api/migrations
-api/__pycache__
-ecommerce\__pycache__
-data
