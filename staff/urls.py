@@ -1,12 +1,14 @@
 from django.urls import path, include
-from . import views
+from .views import *
 
 urlpatterns = [
-    path('', views.LoginView.as_view()),
-    path('auth/', views.authentication),
-    path('logout/', views.logout_view),
-    path('home/', views.HomeView.as_view()),
-    path('home/orders/', views.OrdersView.as_view()),
-    path('home/orders/<int:pk>/',views.OrderDetailView.as_view()),
-    path('update_order_quantity', views.UpdateOrderQuantityView)
+    path('', LoginView.as_view()),
+    path('auth/', authentication),
+    path('logout/', logout_view),
+    path('home/', HomeView.as_view()),
+    path('home/orders/', OrdersView.as_view()),
+    # path('home/orders/<int:pk>/',views.OrderDetailView.as_view()),
+    path('home/orders/<int:pk>/', UpdateOrderView.as_view()),
+    path('update_order_quantity/<int:pk>/', UpdateQuantityView.as_view(), name='update-order-quantity'),
+    path('delete_ordered_product/<int:pk>/', DeleteOrderedProductView.as_view())
 ]

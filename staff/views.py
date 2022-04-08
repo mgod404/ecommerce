@@ -3,30 +3,37 @@ from re import L
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView
-from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
-from api.models import Order, Product, ProductOrdered
+from api.models import Order, ProductOrdered
+from .forms import OrderModelForm, QuantityModelForm
 
-def UpdateOrderQuantityView(request):
-    quantity = request.POST['quantity']
-    product_id = request.POST['product_id']
-    update = ProductOrdered.objects.get(product_id=product_id).update(quantity=quantity)
-    update.save()
-    return
-class OrderDetailView(LoginRequiredMixin, ListView):
+class DeleteOrderedProductView(LoginRequiredMixin, DeleteView):
+    login_url = '/staff/'
+    redirect_field_name = login_url
+    template_name = 'staff/deleteproductordered.html'
+    form_class = QuantityModelForm
+    queryset = ProductOrdered.objects.all()
+    success_url = '/staff/home/orders/'
+class UpdateQuantityView(LoginRequiredMixin,UpdateView):
+    login_url = '/staff/'
+    redirect_field_name = login_url
+    template_name = 'staff/updateorderquantity.html'
+    form_class = QuantityModelForm
+    queryset = ProductOrdered.objects.all()
+    success_url = '/staff/home/orders/'
+class UpdateOrderView(LoginRequiredMixin, UpdateView):
     login_url = '/staff/'
     redirect_field_name = login_url
     template_name = 'staff/orderdetail.html'
-    context_object_name = 'products_ordered'
+    form_class = OrderModelForm
+    queryset = Order.objects.all()
+    success_url = '/staff/home/orders/'
 
-    def get_queryset(self):
-        queryset = ProductOrdered.objects.filter(order=self.kwargs['pk'])
-        return queryset
     def get_context_data(self, **kwargs):
-        context = super(OrderDetailView, self).get_context_data(**kwargs)
-        context['order_details'] = Order.objects.get(id=self.kwargs['pk'])
+        context = super(UpdateOrderView, self).get_context_data(**kwargs)
+        context['products_ordered'] = ProductOrdered.objects.filter(order_id=self.kwargs['pk'])
         return context
 class OrdersView(LoginRequiredMixin, ListView):
     template_name = "staff/orders.html"
