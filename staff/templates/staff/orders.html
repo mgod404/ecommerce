@@ -33,7 +33,7 @@
                 <th scope="row">{{order.id}}</th>
                 <td>{{order.email}}</td>
                 <td>{{order.date_of_order}}</td>
-                <td><a href='/staff/home/orders/{{order.id}}'>Edit Order</a></td>
+                <td><a href='{% url "update-order" pk=order.id %}'>Edit Order</a></td>
             </tr>
             {% empty %}
             <th scope="row">Empty</th>

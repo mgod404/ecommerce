@@ -8,7 +8,7 @@ urlpatterns = [
     path('home/', HomeView.as_view()),
     path('home/orders/', OrdersView.as_view()),
     # path('home/orders/<int:pk>/',views.OrderDetailView.as_view()),
-    path('home/orders/<int:pk>/', UpdateOrderView.as_view()),
+    path('home/orders/<int:pk>/', UpdateOrderView.as_view(), name='update-order'),
     path('update_order_quantity/<int:pk>/', UpdateQuantityView.as_view(), name='update-order-quantity'),
-    path('delete_ordered_product/<int:pk>/', DeleteOrderedProductView.as_view())
+    path('delete_ordered_product/<int:pk>/', DeleteOrderedProductView.as_view(), name='delete-product-ordered')
 ]
