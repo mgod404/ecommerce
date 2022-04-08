@@ -7,18 +7,39 @@
 
   <title>Orders</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" 
+    rel="stylesheet" 
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" 
+    crossorigin="anonymous">
 
 </head>
 
 <body>
+    <div class='container'>
     <h1>Orders</h1>
-    <ul>
-    {% for order in object_list %}
-        <li>{{ order.email }} - {{ order.date_of_order }}</li>
-    {% empty %}
-        <li>No orders.</li>
-    {% endfor %}
-    </ul>    
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Order ID</th>
+                <th scope="col">Order Email</th>
+                <th scope="col">Order Date</th>
+                <th scope="col">Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in object_list %}
+            <tr>
+                <th scope="row">{{order.id}}</th>
+                <td>{{order.email}}</td>
+                <td>{{order.date_of_order}}</td>
+                <td><a href='/staff/home/orders/{{order.id}}'>Edit Order</a></td>
+            </tr>
+            {% empty %}
+            <th scope="row">Empty</th>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
 </body>
 </html>
