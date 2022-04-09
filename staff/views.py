@@ -1,5 +1,5 @@
 from multiprocessing import context
-from re import L
+from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView
@@ -15,21 +15,21 @@ class DeleteOrderedProductView(LoginRequiredMixin, DeleteView):
     template_name = 'staff/deleteproductordered.html'
     form_class = QuantityModelForm
     queryset = ProductOrdered.objects.all()
-    success_url = '/staff/home/orders/'
+    success_url = reverse_lazy('update-order')
 class UpdateQuantityView(LoginRequiredMixin,UpdateView):
     login_url = '/staff/'
     redirect_field_name = login_url
     template_name = 'staff/updateorderquantity.html'
     form_class = QuantityModelForm
     queryset = ProductOrdered.objects.all()
-    success_url = '/staff/home/orders/'
+    success_url = reverse_lazy('update-order')
 class UpdateOrderView(LoginRequiredMixin, UpdateView):
     login_url = '/staff/'
     redirect_field_name = login_url
     template_name = 'staff/orderdetail.html'
     form_class = OrderModelForm
     queryset = Order.objects.all()
-    success_url = '/staff/home/orders/'
+    success_url = reverse_lazy('update-order')
 
     def get_context_data(self, **kwargs):
         context = super(UpdateOrderView, self).get_context_data(**kwargs)
