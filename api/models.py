@@ -1,5 +1,4 @@
 from django.db import models
-from sqlalchemy import false
 
 def images_dir_path(instance, filename):
     return f'imaged{filename}'
@@ -41,3 +40,4 @@ class ProductOrdered(models.Model):
     quantity = models.PositiveIntegerField()
     def __str__(self):
         return f'{self.order}, {self.product}, {self.quantity}'
+

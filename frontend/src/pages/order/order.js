@@ -77,11 +77,13 @@ const OrderComponent = () => {
                                                 {product.brand} {product.model}
                                         </Card.Text>
                                     </div>
-                                    <div style={{width:'3rem'}} className='d-flex align-content-center justify-content-center flex-wrap mx-2'>
+                                    <div style={{width:'4rem'}} className='d-flex align-content-center justify-content-center flex-wrap mx-2'>
                                         <InputGroup className="d-flex align-content-center flex-wrap">
                                             <FormControl
                                             style={{bordercolor:'pink'}}
                                             placeholder={product.quantity}
+                                            type='number'
+                                            min = '1'
                                             onChange={(e) =>{
                                                 if(e.target.value === ''){
                                                     e.stopPropagation();

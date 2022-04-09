@@ -16,7 +16,7 @@
         <div class='card p-4 m-5' style='width:30rem'>
             <form method="post">{% csrf_token %}
                 <p>Are you sure you want to delete "{{ object }}"?</p>
-                {{ form }}
+                {{form}}
                 <input type="submit" value="Confirm">
             </form>
         </div>
