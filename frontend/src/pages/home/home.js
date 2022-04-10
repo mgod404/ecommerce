@@ -1,5 +1,5 @@
 import { React, useContext } from "react";
-import './home.css';
+import './home.scss';
 import NavbarComponent from '../../components/navbar/navbar';
 import { CartContext } from "../../contexts/CartContext";
 

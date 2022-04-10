@@ -1,7 +1,7 @@
 import {React} from "react"
-import 'bootstrap/dist/css/bootstrap.min.css'
 import "bootstrap-icons/font/bootstrap-icons.css"
 import { Navbar, Container, Nav,} from "react-bootstrap"
+import './navbar.scss'
 import NavbarCartComponent from "../navbarcart/navbarcart"
 
 const NavbarComponent = () => {

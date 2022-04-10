@@ -3,7 +3,7 @@ import { CartContext } from "../../contexts/CartContext"
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Card, Col, Row, InputGroup, FormControl, Form, Button } from "react-bootstrap";
-import './order.css';
+import './order.scss';
 
 const OrderComponent = () => {
     const {cart, setProductQuantity, removeProductFromCart} = useContext(CartContext);

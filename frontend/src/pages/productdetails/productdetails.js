@@ -6,7 +6,7 @@ import AddToCardBttnComponent from "../../components/addtocardbttn/addtocardbttn
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Card, Row, Col } from "react-bootstrap";
-import './productdetails.css';
+import './productdetails.scss';
 
 const ProductDetails = () => {
     const params = useParams();

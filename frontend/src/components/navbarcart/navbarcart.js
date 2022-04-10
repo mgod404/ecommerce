@@ -1,8 +1,8 @@
 import {React, useContext } from "react"
 import { useNavigate } from "react-router-dom"
-import 'bootstrap/dist/css/bootstrap.min.css'
 import "bootstrap-icons/font/bootstrap-icons.css"
 import {NavDropdown,Button, Image, FormControl, InputGroup } from "react-bootstrap"
+import './navbarcart.scss'
 import { CartContext } from "../../contexts/CartContext"
 
 const NavbarCartComponent = () => {

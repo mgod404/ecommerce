@@ -2,7 +2,7 @@ import {useContext, React} from "react"
 import { useNavigate } from "react-router-dom"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Card, Row, Col } from "react-bootstrap"
-import './product.css'
+import './product.scss'
 import AddToCardBttnComponent from "../../components/addtocardbttn/addtocardbttn"
 import { IsDesktopScreenContext } from "../../contexts/IsDesktopScreenContext"
 
@@ -46,7 +46,7 @@ const Product = (props) => {
     ) : (
         <Card 
             onClick={() => navigate(`/p/${props.data.id}`)}
-            className='d-flex flex-row'>
+            className='d-flex flex-row on-hover border-top-0 border-end-0 border-start-0'>
                     <Card.Img 
                         src={props.data.picture}  
                         style={{height:'10rem', width:'12rem'}}
@@ -58,6 +58,7 @@ const Product = (props) => {
                         <Card.Text>
                             {getProductOptions(props.data.options)}
                         </Card.Text>
+                        <Card.Text>{props.data.price}</Card.Text>
                         <div className='d-flex flex-row'>
                             <AddToCardBttnComponent 
                                 id={props.data.id}

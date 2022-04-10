@@ -13,3 +13,9 @@
 .text-dec {
     text-decoration: none;
 }
+
+.on-hover {
+    @extend .border-primary;
+}
+
+@import '../../Theme.scss';
