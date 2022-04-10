@@ -1,8 +1,11 @@
 import {React, useContext} from "react";
-import { Button } from "react-bootstrap";
-import './addtocardbttn.scss';
+
 import { CartContext } from "../../contexts/CartContext";
 import { IsDesktopScreenContext } from "../../contexts/IsDesktopScreenContext";
+
+import "bootstrap-icons/font/bootstrap-icons.css"
+import { Button } from "react-bootstrap";
+import './addtocardbttn.scss';
 
 const AddToCardBttnComponent = (props) => {
     const { addToCart } = useContext(CartContext); 
@@ -23,7 +26,7 @@ const AddToCardBttnComponent = (props) => {
                 onClick={(event) =>{
                     event.stopPropagation();
                     addToCart(props.data);
-                }}>Add To Cart
+                }}><i class="bi bi-cart-plus"></i>
         </Button>
         )
     )
