@@ -1,30 +1,34 @@
-from multiprocessing import context
-from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import redirect, HttpResponseRedirect
-from api.models import Order, ProductOrdered
-from .forms import OrderModelForm, QuantityModelForm
+from django.shortcuts import redirect
+from api.models import Order, ProductOrdered, Product
+from .forms import OrderModelForm, QuantityModelForm, DeleteProductOrderedForm, NewProductModelForm
 class UserLoggedInMixin(LoginRequiredMixin):
     login_url = '/staff/'
     redirect_field_name = login_url
 
 
 class CreateNewProductView(UserLoggedInMixin, CreateView):
-    pass
+    template_name = 'staff/createnewproduct.html'
+    form_class = NewProductModelForm
+    queryset = Product.objects.all()
+    success_url = 'staff/home/'
+
 class DeleteOrderedProductView(UserLoggedInMixin, DeleteView):
     template_name = 'staff/deleteproductordered.html'
-    form_class = QuantityModelForm
+    form_class = DeleteProductOrderedForm
     queryset = ProductOrdered.objects.all()
     success_url = '/staff/home/orders/'
+
 class UpdateQuantityView(UserLoggedInMixin,UpdateView):
     template_name = 'staff/updateorderquantity.html'
     form_class = QuantityModelForm
     queryset = ProductOrdered.objects.all()
     success_url = '/staff/home/orders/'
+
 class UpdateOrderView(UserLoggedInMixin, UpdateView):
     template_name = 'staff/orderdetail.html'
     form_class = OrderModelForm
@@ -35,6 +39,7 @@ class UpdateOrderView(UserLoggedInMixin, UpdateView):
         context = super(UpdateOrderView, self).get_context_data(**kwargs)
         context['products_ordered'] = ProductOrdered.objects.filter(order_id=self.kwargs['pk'])
         return context
+    
 class OrdersView(UserLoggedInMixin, ListView):
     template_name = "staff/orders.html"
     model = Order
