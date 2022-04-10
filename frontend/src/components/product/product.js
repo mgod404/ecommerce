@@ -1,9 +1,11 @@
 import {useContext, React} from "react"
 import { useNavigate } from "react-router-dom"
+import AddToCardBttnComponent from "../../components/addtocardbttn/addtocardbttn"
+
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Card, Row, Col } from "react-bootstrap"
 import './product.scss'
-import AddToCardBttnComponent from "../../components/addtocardbttn/addtocardbttn"
+
 import { IsDesktopScreenContext } from "../../contexts/IsDesktopScreenContext"
 
 const Product = (props) => {
@@ -27,7 +29,7 @@ const Product = (props) => {
     const navigate = useNavigate();
 
     return isDesktopScreen ? (
-            <Card onClick={() => navigate(`/p/${props.data.id}`)}>
+            <Card onClick={() => navigate(`/p/${props.data.id}`)} className='on-hover-desktop'>
                 <Card.Img src={props.data.picture}/>
                 <Card.Body className='d-flex flex-column'>
                     <Card.Title className='product-card-body'>{props.data.brand} {props.data.model}</Card.Title>
@@ -46,7 +48,7 @@ const Product = (props) => {
     ) : (
         <Card 
             onClick={() => navigate(`/p/${props.data.id}`)}
-            className='d-flex flex-row on-hover border-top-0 border-end-0 border-start-0'>
+            className='d-flex flex-row on-hover-mobile'>
                     <Card.Img 
                         src={props.data.picture}  
                         style={{height:'10rem', width:'12rem'}}
@@ -58,8 +60,8 @@ const Product = (props) => {
                         <Card.Text>
                             {getProductOptions(props.data.options)}
                         </Card.Text>
-                        <Card.Text>{props.data.price}</Card.Text>
-                        <div className='d-flex flex-row'>
+                        <div className='d-flex flex-row justify-content-between'>
+                            <div className='d-flex align-items-center'>{props.data.price} EUR</div>
                             <AddToCardBttnComponent 
                                 id={props.data.id}
                                 data={props.data}>

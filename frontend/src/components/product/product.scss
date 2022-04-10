@@ -14,8 +14,22 @@
     text-decoration: none;
 }
 
-.on-hover {
-    @extend .border-primary;
+.on-hover-desktop {
+    &:hover{
+        @extend .border-primary;        
+    }
+}
+
+.on-hover-mobile {
+    @extend .border-top-0;
+    @extend .border-end-0;
+    @extend .border-start-0;
+    &:hover{
+        @extend .border-primary;
+        @extend .border-top;
+        @extend .border-end;
+        @extend .border-start;
+    }
 }
 
 @import '../../Theme.scss';
