@@ -1,9 +1,11 @@
 import {React, useContext } from "react"
 import { useNavigate } from "react-router-dom"
+
+import { CartContext } from "../../contexts/CartContext"
+
 import "bootstrap-icons/font/bootstrap-icons.css"
 import {NavDropdown,Button, Image, FormControl, InputGroup } from "react-bootstrap"
 import './navbarcart.scss'
-import { CartContext } from "../../contexts/CartContext"
 
 const NavbarCartComponent = () => {
     const {cart, removeProductFromCart, setProductQuantity} = useContext(CartContext);
@@ -43,6 +45,7 @@ const NavbarCartComponent = () => {
                                 setProductQuantity(product.id, e.target.value);
                                 e.target.value = '';
                             }}
+                            minvalue='1'
                             />
                         </InputGroup>
                     </div>
