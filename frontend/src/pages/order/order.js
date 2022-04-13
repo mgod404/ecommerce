@@ -1,9 +1,9 @@
 import {React, useContext, useState } from "react"
 import { CartContext } from "../../contexts/CartContext"
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Card, Col, Row, InputGroup, FormControl, Form, Button } from "react-bootstrap";
-import './order.scss';
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { Card, Col, Row, InputGroup, FormControl, Form, Button } from "react-bootstrap"
+import './order.scss'
 
 const OrderComponent = () => {
     const {cart, setProductQuantity, removeProductFromCart} = useContext(CartContext);
@@ -39,7 +39,6 @@ const OrderComponent = () => {
             body: JSON.stringify(requestCart)
         })
         const data = await response.json();
-        console.log(data);
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -62,9 +61,9 @@ const OrderComponent = () => {
     return(
         <div className='d-flex flex-row justify-content-center'>
             <Col style={{maxWidth:'50rem'}}>
-                <Card>
+                <Card className='my-3 border-bottom-0'>
                     {cart !== 0 ? (cart.map((product, index) => (
-                        <Card key={index}>
+                        <Card className='border-start-0 border-top-0 border-end-0' key={index}>
                             <Card.Body className='d-flex flex-row justify-content-between'>
                                     <div className='d-flex flex-fill align-content-center justify-content-center flex-wrap'>
                                         <Card.Img 
@@ -121,7 +120,7 @@ const OrderComponent = () => {
                         </Card>
                         ))): (<Card>EMPTY CART</Card>)}
                 </Card>
-                <Card>
+                <Card className='mb-3'>
                     <Card.Body>
                         <div className='fs-3 text-secondary'>TOTAL: {countTotal()} EUR</div>
                     </Card.Body>

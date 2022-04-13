@@ -1,7 +1,10 @@
 from .models import *
 from rest_framework import serializers
 
-
+class TemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OptionsTemplate
+        fields = ['options']
 class ProductDetailsSerializer(serializers.ModelSerializer):
     in_stock = serializers.SerializerMethodField()
     class Meta:

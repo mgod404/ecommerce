@@ -5,8 +5,32 @@ class NewProductModelForm(ModelForm):
     class Meta:
         model=Product
         fields= [
-            
+            'category',
+            'brand',
+            'model',
+            'options',
+            'price',
+            'picture',
+            'description',
+            'quantity'
         ]
+    def __init__(self, *args, **kwargs):
+        super(NewProductModelForm, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+            })
+            if(field == 'options'): 
+                self.fields[field].label = ''
+                self.fields[field].widget.attrs.update({
+                    'rows' : '1',
+                    'style' : 'opacity: 0;'
+                })
+            if(field == 'category'):
+                self.fields[field].label = ''
+                self.fields[field].widget.attrs.update({
+                    'style' : 'opacity: 0;'
+                })
 
 class OrderModelForm(ModelForm):
     class Meta:

@@ -6,6 +6,12 @@ from rest_framework.response import Response
 from .models import *
 from .serializers import *
 
+class OptionView(generics.GenericAPIView):
+    def get(self,request,format=None,category=None):
+        category = category
+        template = OptionsTemplate.objects.get(category=category)
+        serializer = TemplateSerializer(template, context={"request": request})
+        return Response(serializer.data)
 class ProductView(generics.GenericAPIView):
     def get(self,request,format=None,pk=None):
         id = pk 
