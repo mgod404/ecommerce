@@ -1,10 +1,18 @@
 from .models import *
 from rest_framework import serializers
 
+class CheckOrderStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['order_state']
+
+
 class TemplateSerializer(serializers.ModelSerializer):
     class Meta:
         model = OptionsTemplate
         fields = ['options']
+
+
 class ProductDetailsSerializer(serializers.ModelSerializer):
     in_stock = serializers.SerializerMethodField()
     class Meta:
@@ -19,16 +27,19 @@ class ProductDetailsSerializer(serializers.ModelSerializer):
         if(obj.quantity == 0):
             return 'out of stock'
 
+
 class CategorySerializer(ProductDetailsSerializer):
     in_stock = None
     class Meta:
         model = Product
         exclude = ['description', 'quantity']
 
+
 class NewOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         exclude = ['total_price']
+
 
 class ProductOrderedSerializer(serializers.ModelSerializer):
     class Meta:

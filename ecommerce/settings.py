@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure-3i^v%2@i2s)boo-f)^jbj8gffi!h*6hcz0^dkluq1io6*4#lsh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['6d25-89-65-67-103.eu.ngrok.io', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -112,3 +112,8 @@ MEDIA_ROOT = BASE_DIR / 'MEDIA'
 MEDIA_URL = 'media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+PAYPAL_WEBHOOK_ID = os.environ.get('PAYPAL_WEBHOOK_ID')
+PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID')
+PAYPAL_CLIENT_SECRET = os.environ.get('PAYPAL_CLIENT_SECRET')

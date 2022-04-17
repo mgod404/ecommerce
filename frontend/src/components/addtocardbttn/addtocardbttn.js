@@ -1,11 +1,11 @@
-import {React, useContext} from "react";
+import {React, useContext} from "react"
 
-import { CartContext } from "../../contexts/CartContext";
-import { IsDesktopScreenContext } from "../../contexts/IsDesktopScreenContext";
+import { CartContext } from "../../contexts/CartContext"
+import { IsDesktopScreenContext } from "../../contexts/IsDesktopScreenContext"
 
 import "bootstrap-icons/font/bootstrap-icons.css"
-import { Button } from "react-bootstrap";
-import './addtocardbttn.scss';
+import { Button } from "react-bootstrap"
+import './addtocardbttn.scss'
 
 const AddToCardBttnComponent = (props) => {
     const { addToCart } = useContext(CartContext); 
