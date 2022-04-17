@@ -9,10 +9,10 @@
     <div class='d-flex flex-row justify-content-center'>
         <div class='d-flex flex-column card m-3 p-3'>
             <div class='mb-3'>
-                <label for='mockupCategoryId' onChange='updateCategory(id_category)'>Category:</label>
-                <input type='text' class='form-control' id='mockupCategoryId' required>
+                <label for='mockupCategoryId' >Category:</label>
+                <input type='text' class='form-control' id='mockupCategoryId' onChange='updateCategory()' required>
             </div>
-            <button class='btn btn-primary mb-3' onClick="generateOptions(mockupCategoryId)">Generate Product Options For Category</button>
+            <button class='btn btn-primary mb-3' onClick="generateOptions()">Generate Product Options For Category</button>
 
             <div class='mb-3' id='optionInputsDiv'>
             </div>

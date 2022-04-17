@@ -67,3 +67,9 @@ const updateOptionsInput = () => {
         submitButton.disabled = false;
     }
 }
+
+
+const updateCategory = () => {
+    let categoryInput = document.getElementById('id_category');
+    categoryInput.value = document.getElementById('mockupCategoryId').value;
+}
