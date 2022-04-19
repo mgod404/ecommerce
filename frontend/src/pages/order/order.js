@@ -39,6 +39,7 @@ const OrderComponent = () => {
             body: JSON.stringify(requestCart)
         })
         const data = await response.json();
+        console.log(data.status);
     }
     const handleSubmit = async (e) => {
         e.preventDefault();

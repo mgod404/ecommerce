@@ -1,6 +1,12 @@
 from .models import *
 from rest_framework import serializers
 
+class CategoryFilterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CategoryFilter
+        fields = ['filters']
+
+
 class CheckOrderStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order

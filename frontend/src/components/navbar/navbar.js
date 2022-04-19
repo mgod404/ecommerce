@@ -7,7 +7,7 @@ import './navbar.scss';
 import NavbarCartComponent from "../navbarcart/navbarcart"
 import FilterComponent from "../filter/filter";
 
-const NavbarComponent = () => {
+const NavbarComponent = (props) => {
     const navigate = useNavigate();
     const [filterTrigger, setFilterTrigger] = useState(false);
 
@@ -21,7 +21,13 @@ const NavbarComponent = () => {
             </Nav>
             <Nav className='justify-content-end'>
                 <Button onClick={() => setFilterTrigger(true)}>Filter</Button>
-                <FilterComponent filterTrigger={filterTrigger} setFilterTrigger={setFilterTrigger}/>
+                <FilterComponent 
+                    category={props.category}
+                    filterTrigger={filterTrigger} 
+                    setFilterTrigger={setFilterTrigger}
+                    setProductFilters={props.setProductFilters}
+                    productFilters={props.productFilters}
+                    />
                 <NavbarCartComponent/>
             </Nav>
         </Container>

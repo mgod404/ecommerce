@@ -1,8 +1,8 @@
 from django.db import models
 
 
-def images_dir_path(instance, filename):
-    return f'imaged{filename}'
+def images_dir_path(instance,filename):
+    return filename
 
 
 class Product(models.Model):
@@ -58,3 +58,5 @@ class ProductOrdered(models.Model):
 class CategoryFilter(models.Model):
     category = models.CharField(max_length=20)
     filters = models.JSONField()
+    def __str__(self) -> str:
+        return f'{self.category} Filters'

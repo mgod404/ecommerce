@@ -54,7 +54,6 @@ def update_filters(sender, instance, created, **kwargs):
             new_filters = {
                 'category': product.category,
                 'brand': [product.brand],
-                'model': [product.model],
                 'options': {}
             }
             for key in product.options:
@@ -64,7 +63,6 @@ def update_filters(sender, instance, created, **kwargs):
             create_filter.save()
 
         category_filters[0].filters['brand'].append(product.brand)
-        category_filters[0].filters['model'].append(product.model)
         for key in category_filters[0].filters['options']:
             if product.options[key] in category_filters[0].filters['options'][key]:
                 return

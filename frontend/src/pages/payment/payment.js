@@ -4,7 +4,7 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js"
 import { CartContext } from "../../contexts/CartContext"
 
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { Card, Button } from "react-bootstrap"
+import { Card } from "react-bootstrap"
 import './payment.scss'
 import CheckPaymentStatusComponent from "../../components/checkpaymentstatus/checkpaymentstatus"
 

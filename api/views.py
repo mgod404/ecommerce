@@ -1,5 +1,6 @@
 import decimal
 import json
+from nis import cat
 
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -11,12 +12,37 @@ from rest_framework import generics, status, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import rest_framework as drfilters
+from django_filters import filters as new_filters
+
 from paypalrestsdk import notifications
 
 from .models import *
 from .serializers import *
 
+class MultiValueCharFilter(new_filters.BaseCSVFilter, new_filters.CharFilter):
+    def filter(self, qs, value):
+        # value is either a list or an 'empty' value
+        values = value or []
 
+        for value in values:
+            qs = super(MultiValueCharFilter, self).filter(qs, value)
+
+        return qs
+class ProductSearchFilter(drfilters.FilterSet):
+    price = drfilters.RangeFilter()
+    brand = MultiValueCharFilter()
+    class Meta:
+        model = Product
+        fields = ['price','brand','category']
+
+class SearchView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = CategorySerializer
+    filter_backends = [DjangoFilterBackend ,filters.OrderingFilter]
+    ordering_fields = ['price']
+    filterset_class = ProductSearchFilter
 class OrderStatusView(APIView):
     def get(self,request, orderid= None):
         order = Order.objects.get(id=orderid)
@@ -62,12 +88,13 @@ class ProcessWebhookView(APIView):
 
         return HttpResponse()
 
-
-class ProductListView(generics.ListAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductOrderedSerializer
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['brand', 'model']
+class CategoryFilterView(generics.RetrieveAPIView):
+    serializer_class = CategoryFilterSerializer
+    def get_queryset(self):
+        return CategoryFilter.objects.get(category=self.kwargs['category'])
+    def get(self,request, *args, **kwargs):
+        category = self.serializer_class(self.get_queryset(),context={"request": request}, many=False)
+        return Response(category.data)
 
 
 class OptionView(generics.GenericAPIView):
@@ -87,11 +114,27 @@ class ProductView(generics.GenericAPIView):
 
 
 class CategoryView(generics.ListAPIView):
-    serializer_class = CategorySerializer    
+    serializer_class = CategorySerializer
+    serializer_class_filters = CategoryFilterSerializer
+    # filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    # search_fields = ['category','brand']
+    # ordering_fields = ['price']
+
     def get_queryset(self):
         category = self.kwargs['category']
         return Product.objects.filter(category=category)
-
+    def get_queryset_filters(self):
+        category = self.kwargs['category']
+        print(self.kwargs)
+        return CategoryFilter.objects.filter(category=category)
+    def get(self,request, *args, **kwargs):
+        print(request.GET)
+        category = self.serializer_class(self.get_queryset(),context={"request": request}, many=True)
+        filters = self.serializer_class_filters(self.get_queryset_filters(),context={"request": request}, many=True)
+        return Response({
+            'result': category.data,
+            'filters': filters.data
+        })
 
 class NewOrderView(generics.CreateAPIView):
     serializer_class = NewOrderSerializer
