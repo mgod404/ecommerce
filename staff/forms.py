@@ -36,6 +36,7 @@ class OrderModelForm(ModelForm):
     class Meta:
         model = Order
         fields = [
+            'order_state',
             'email',
             'name',
             'surname',

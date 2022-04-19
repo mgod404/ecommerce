@@ -1,6 +1,7 @@
+from unicodedata import category
 from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
-from .models import Order, Product, ProductOrdered
+from .models import Order, Product, ProductOrdered, CategoryFilter
 
 
 @receiver(pre_save, sender=ProductOrdered)
@@ -10,7 +11,6 @@ def update_product_quantity(sender, instance, **kwargs):
     product.quantity -= instance.quantity
     product.save()
     return
-
 
 @receiver(post_delete, sender=ProductOrdered)
 @receiver(pre_save, sender=ProductOrdered)
@@ -32,7 +32,6 @@ def update_total_price(sender,instance, **kwargs):
     order.total_price = new_total_price
     order.save()
 
-
 @receiver(post_delete, sender=ProductOrdered)
 def delete_order_if_empty(sender, instance, **kwargs):
     order_id = instance.order_id
@@ -43,3 +42,30 @@ def delete_order_if_empty(sender, instance, **kwargs):
         order.delete()
 
 
+
+
+@receiver(post_save, sender= Product)
+def update_filters(sender, instance, created, **kwargs):
+    if created:
+        product = instance
+        category_filters = CategoryFilter.objects.filter(category=product.category)
+
+        if not category_filters:
+            new_filters = {
+                'category': product.category,
+                'brand': [product.brand],
+                'model': [product.model],
+                'options': {}
+            }
+            for key in product.options:
+                value = product.options[key]
+                new_filters['options'][key] = [value]
+            create_filter = CategoryFilter.objects.create(category=product.category,filters=new_filters)
+            create_filter.save()
+
+        category_filters[0].filters['brand'].append(product.brand)
+        category_filters[0].filters['model'].append(product.model)
+        for key in category_filters[0].filters['options']:
+            if product.options[key] in category_filters[0].filters['options'][key]:
+                return
+            category_filters[0].filters['options'][key] = category_filters[0].filters['options'][key].append(product.options[key])
