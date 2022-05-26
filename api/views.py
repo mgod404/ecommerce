@@ -1,10 +1,8 @@
-import decimal
+from decimal import *
 import json
-from nis import cat
 
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.views import View
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
@@ -30,12 +28,15 @@ class MultiValueCharFilter(new_filters.BaseCSVFilter, new_filters.CharFilter):
             qs = super(MultiValueCharFilter, self).filter(qs, value)
 
         return qs
+
+
 class ProductSearchFilter(drfilters.FilterSet):
     price = drfilters.RangeFilter()
     brand = MultiValueCharFilter()
     class Meta:
         model = Product
         fields = ['price','brand','category']
+
 
 class SearchView(generics.ListAPIView):
     queryset = Product.objects.all()
@@ -82,19 +83,11 @@ class ProcessWebhookView(APIView):
         amount_paid = webhook_event["resource"]["purchase_units"][0]["amount"]["value"]
         order = Order.objects.get(id=order_id)
 
-        if decimal(order.total_price) == decimal(amount_paid):
+        if Decimal(order.total_price) == Decimal(amount_paid):
             order.order_state = 'PAYMENT_RECEIVED'
             order.save()
 
         return HttpResponse()
-
-class CategoryFilterView(generics.RetrieveAPIView):
-    serializer_class = CategoryFilterSerializer
-    def get_queryset(self):
-        return CategoryFilter.objects.get(category=self.kwargs['category'])
-    def get(self,request, *args, **kwargs):
-        category = self.serializer_class(self.get_queryset(),context={"request": request}, many=False)
-        return Response(category.data)
 
 
 class OptionView(generics.GenericAPIView):
@@ -116,25 +109,50 @@ class ProductView(generics.GenericAPIView):
 class CategoryView(generics.ListAPIView):
     serializer_class = CategorySerializer
     serializer_class_filters = CategoryFilterSerializer
-    # filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    # search_fields = ['category','brand']
-    # ordering_fields = ['price']
 
     def get_queryset(self):
+        get_parameters = self.request.GET.copy()
         category = self.kwargs['category']
-        return Product.objects.filter(category=category)
-    def get_queryset_filters(self):
-        category = self.kwargs['category']
-        print(self.kwargs)
-        return CategoryFilter.objects.filter(category=category)
+
+        #remove order_by from params list and add later
+        #so we can pass other argumets
+        order_by = ''
+        if 'order_by' in get_parameters.keys():
+            order_by = get_parameters['order_by']
+            del get_parameters['order_by']
+
+        filter_by_price = {}
+        if 'price_min' in get_parameters:
+            filter_by_price['price__gte'] = float(get_parameters['price_min'])
+            del get_parameters['price_min']
+        if 'price_max' in get_parameters:
+            filter_by_price['price__lte'] = float(get_parameters['price_max'])
+            del get_parameters['price_max']
+
+        products = Product.objects.filter(category=category, **get_parameters, **filter_by_price)
+
+        if order_by:
+            return products.order_by(order_by)
+        return products
+
     def get(self,request, *args, **kwargs):
-        print(request.GET)
         category = self.serializer_class(self.get_queryset(),context={"request": request}, many=True)
-        filters = self.serializer_class_filters(self.get_queryset_filters(),context={"request": request}, many=True)
         return Response({
             'result': category.data,
-            'filters': filters.data
         })
+
+
+class CategoryFiltersView(generics.GenericAPIView):
+    serializer_class = CategoryFilterSerializer
+
+    def get_queryset(self, category=None):
+        queryset = CategoryFilter.objects.get(category = self.kwargs['category'])
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        options = self.serializer_class(self.get_queryset())
+        return Response(options.data)
+
 
 class NewOrderView(generics.CreateAPIView):
     serializer_class = NewOrderSerializer

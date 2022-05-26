@@ -27,6 +27,9 @@ const NavbarComponent = (props) => {
                     setFilterTrigger={setFilterTrigger}
                     setProductFilters={props.setProductFilters}
                     productFilters={props.productFilters}
+                    fetchProducts={props.fetchProducts}
+                    searchParams={props.searchParams}
+                    setSearchParams={props.setSearchParams}
                     />
                 <NavbarCartComponent/>
             </Nav>
