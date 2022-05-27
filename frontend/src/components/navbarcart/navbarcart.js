@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { CartContext } from "../../contexts/CartContext"
 
 import "bootstrap-icons/font/bootstrap-icons.css"
-import {NavDropdown,Button, Image, FormControl, InputGroup } from "react-bootstrap"
+import {NavDropdown,Button, Image, FormControl, InputGroup, DropdownButton } from "react-bootstrap"
 import './navbarcart.scss'
 
 const NavbarCartComponent = () => {
@@ -15,11 +15,13 @@ const NavbarCartComponent = () => {
         let sum = 0;
         cart.forEach(element => sum = sum + (element.quantity * element.price));
         return sum
-    }
+    };
+
+    const navDropdownTitle = (<i className="bi bi-cart-plus"></i>);
 
     return(
         cart.length !== 0 ? (
-            <NavDropdown align='end' title="Cart" className='dropdown-menu-end'>
+            <DropdownButton align='end' title={navDropdownTitle} className='dropdown-menu-end ms-2' style={{color:'yellow'}}>
                 {cart.map((product,index) => (
                 <NavDropdown.Item className='d-flex flex-row justify-content-center align-items-center' key={index}>
                     <div className='d-flex'>
@@ -75,11 +77,11 @@ const NavbarCartComponent = () => {
                         navigate(`/finalizeorder/`)
                         }}>Place an Order</Button>
                 </NavDropdown.ItemText>
-            </NavDropdown>)
+            </DropdownButton>)
                 : 
-                (<NavDropdown align='end' title="Cart" className='dropdown-menu-end'>
+                (<DropdownButton align='end' title={navDropdownTitle} className='dropdown-menu-end ms-2'>
                     <NavDropdown.Item disabled>Cart is empty.</NavDropdown.Item>
-                </NavDropdown>
+                </DropdownButton>
             ))
 } 
 

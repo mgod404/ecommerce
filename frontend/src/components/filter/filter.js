@@ -5,22 +5,19 @@ import { Card, CloseButton, Form, FormControl, Button } from "react-bootstrap"
 import './filter.scss';
 
 const FilterComponent = (props) => {
-    const [localFilterVars, setLocalFilterVars] = useState([]);
     const [filters, setFilters] = useState('');
+    const [localSearchParams, setLocalSearchParams] = useState(props.searchParams);
 
-    useEffect(() => {
-        console.log(localFilterVars);
-    },[localFilterVars]);
 
     const changeBrandFilter = (e) => {
         const brandName = e.target.value;
-        const isBrandChecked = localFilterVars.filter(filter => filter.value !== brandName);
+        const isBrandChecked = localSearchParams.filter(filter => filter.value !== brandName);
         if(e.target.checked && isBrandChecked){
-            setLocalFilterVars([...localFilterVars, {name:"brand__in", value: brandName}]);
+            setLocalSearchParams([...localSearchParams, {name:"brand__in", value: brandName}]);
             return
         }
         if(!e.target.checked && isBrandChecked){
-            setLocalFilterVars(localFilterVars.filter(filter => {
+            setLocalSearchParams(localSearchParams.filter(filter => {
                 if(filter.name === "brand__in" && filter.value === brandName){
                     return false
                 } else {
@@ -35,14 +32,14 @@ const FilterComponent = (props) => {
         //change needed to use as api search param
         const changedOptionName = `options__${optionName}__in`;
         const selectedOption = e.target.value;
-        const isOptionChecked = localFilterVars.filter(filter => filter.changedOptionName === selectedOption);
+        const isOptionChecked = localSearchParams.filter(filter => filter.changedOptionName === selectedOption);
         if(e.target.checked && isOptionChecked){
             let newSelectedOption = {name: changedOptionName, value: selectedOption};
-            setLocalFilterVars([...localFilterVars, newSelectedOption]);
+            setLocalSearchParams([...localSearchParams, newSelectedOption]);
             return
         }
         if(!e.target.checked && isOptionChecked){
-            setLocalFilterVars(localFilterVars.filter(filter => {
+            setLocalSearchParams(localSearchParams.filter(filter => {
                 if(filter.name === changedOptionName && filter.value === selectedOption){
                     return false
                 } else {
@@ -55,15 +52,34 @@ const FilterComponent = (props) => {
 
     const renderOptionsChoices = (option) => {
         const options = filters.options;
-        return options[option].map((element, index) => 
-        (<Form.Check 
-            key={index}
-            type='checkbox'
-            label={element}
-            value={element}
-            name={option}
-            onChange={(e) => changeOptionsFilter(e)}
-            />))
+        return options[option].map((element, index) => {
+            const isCheckboxChecked = localSearchParams.some((param) => param.name === `options__${option}__in` && param.value === element);
+            return (<Form.Check 
+                        key={index}
+                        type='checkbox'
+                        label={element}
+                        value={element}
+                        name={option}
+                        defaultChecked={isCheckboxChecked}
+                        onChange={(e) => {
+                            changeOptionsFilter(e);
+                        }}
+                    />)
+        })
+    };
+
+    const renderBrands = () => {
+        return filters.brand.map((element, index) => {
+            const isCheckboxChecked = localSearchParams.some((param) => param.name === 'brand__in' && param.value === element);
+            return(<Form.Check 
+                key={index}
+                type='checkbox'
+                label={element}
+                value={element}
+                defaultChecked={isCheckboxChecked}
+                onChange={(e) => changeBrandFilter(e)}
+                />)
+        });
     };
 
     const renderOptions = () => {
@@ -76,6 +92,22 @@ const FilterComponent = (props) => {
         ));
         return returnArr
     };
+
+    const renderPriceFilters = (priceFilterName, priceFilterPlaceholder) => {
+        const isFilterAdded = localSearchParams.filter(filter => filter.name === priceFilterName);
+        const defaultValue = isFilterAdded.length !== 0 ? isFilterAdded[0] : ''
+        return(
+            <FormControl 
+                name={priceFilterName}
+                placeholder={priceFilterPlaceholder}
+                defaultValue={defaultValue.value}
+                onChange={(e)=> {
+                    const params = localSearchParams.filter(filter => filter.name !== priceFilterName);
+                    setLocalSearchParams([...params, {name: priceFilterName, value: e.target.value}]);
+                }}
+            />
+        )
+    }
 
     useEffect( () => {
             fetch(`http://127.0.0.1:8000/api/categoryfilters/${props.category}/`)
@@ -92,41 +124,22 @@ const FilterComponent = (props) => {
                     onClick={() => props.setFilterTrigger(false)}/>
 
                     <div className='fs-5 mb-3'>Brand</div>
-                        { filters.brand.map((element, index) => 
-                            (<Form.Check 
-                                key={index}
-                                type='checkbox'
-                                label={element}
-                                value={element}
-                                onChange={(e) => changeBrandFilter(e)}
-                                />)
-                        )}
+                        {renderBrands()}
                     <div className='fs-5 mb-3'>Options</div>
                         {renderOptions()}
                     <div className='fs-5 mt-3'>Price</div>
                     <div className='d-flex flex-row mb-3'>
-                        <FormControl 
-                            name='min_price'
-                            placeholder='Min Price'
-                            onChange={(e)=> {
-                                const localVars = localFilterVars.filter(filter => filter.name !== "price_min");
-                                setLocalFilterVars([...localVars, {name:"price_min", value: e.target.value}]);
-                            }}/>
+                            {renderPriceFilters('price_min', 'Min Price')}
                         <span className='mx-2'>-</span>
-                        <FormControl 
-                            name='max_price'
-                            placeholder='Max Price' 
-                            onChange={(e)=> {
-                                const localVars = localFilterVars.filter(filter => filter.name !== "price_max");
-                                setLocalFilterVars([...localVars, {name:"price_max", value: e.target.value}]);
-                            }}/>
+                            {renderPriceFilters('price_max', 'Max Price')}
                     </div>
-                    <Button 
-                        className='align-self-end'
-                        onClick={() => {
-                            props.fetchProducts(localFilterVars);
-                        }}
-                        >Filter</Button>
+                    <div className='align-self-end flex-row'>
+                        <Button
+                            onClick={() => {
+                                props.setSearchParams(localSearchParams);
+                            }}
+                            >Filter</Button>
+                    </div>
             </Card>
         </div>
     ) : '');

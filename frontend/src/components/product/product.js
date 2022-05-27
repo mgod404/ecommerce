@@ -66,7 +66,6 @@ const Product = (props) => {
                                 id={props.data.id}
                                 data={props.data}>
                             </AddToCardBttnComponent>
-
                         </div>
                     </Card.Body>
         </Card>

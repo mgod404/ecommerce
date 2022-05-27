@@ -16,7 +16,7 @@ const Category = (props) => {
     });
     const [searchParams, setSearchParams] = useState([]);
 
-    const fetchProducts = async (searchParams = []) => {
+    const fetchProducts = async () => {
         let params = '';
         Object.entries(searchParams).forEach( ([index, filter]) => {
             console.log(filter);
@@ -27,13 +27,28 @@ const Category = (props) => {
         const response = await fetch(fetchURL);
         const data = await response.json();
         setProductData(data.result);
-        console.log(data);
     }
 
+    const sortProducts = async (e) => {
+        const sortingValue = e.target.value;
+        console.log(sortingValue);
+        const localVars = searchParams.filter(filter => filter.name !== "order_by");
+        if(sortingValue === ''){
+            setSearchParams(localVars);
+            return
+        }
+        if(localVars.length === 0){
+            console.log('Empty');
+            setSearchParams([{name:'order_by', value: sortingValue}]);
+            return
+        };
+        setSearchParams([...localVars, {name:'order_by', value: sortingValue}]);
+    }
 
     useEffect(() => {
         fetchProducts();
-    }, []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams, props]);
 
     return (
         <div>
@@ -51,12 +66,7 @@ const Category = (props) => {
                         aria-label='--' 
                         className='m-2 sort-by-width' 
                         defaultValue=''
-                        onChange={(e) => {
-                            setProductFilters({
-                                ...productFilters,
-                                'order_by':e.target.value
-                            });
-                        }}
+                        onChange={sortProducts}
                         >
                         <option value=''></option>
                         <option value='price'>Price - Ascending</option>
