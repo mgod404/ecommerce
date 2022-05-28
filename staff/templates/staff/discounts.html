@@ -1,0 +1,51 @@
+{% extends "stafftemplate.html" %}
+
+{%block title%}Orders{% endblock%}
+
+{% block content %}
+    <div class='container'>
+    <h1>Discounts</h1>
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Discount ID</th>
+                <th scope="col">Discount Product</th>
+                <th scope="col">Discount Begins</th>
+                <th scope="col">Discount Ends</th>
+                <th scope="col">Discount In Number</th>
+                <th scope="col">Discount in Percentage</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for discount in discount_list %}
+            <tr>
+                <th scope="row">{{discount.id}}</th>
+                <td>{{discount.product}}</td>
+                <td>{{discount.begins}}</td>
+                <td>{{discount.ends}}</td>
+                <td>{{discount.discount_in_number}}  €</td>
+                <td>{{discount.discount_in_percentage}}  %</td>
+                <td><a 
+                    type="button" 
+                    class="btn-sm btn-primary mt-3 m-3" 
+                    href="{% url 'update-discount' pk=discount.id %}">
+                    Update Discount
+                </a>
+                <td><a 
+                    type="button" 
+                    class="btn-sm btn-primary mt-3 m-3" 
+                    href="{% url 'delete-discount' pk=discount.id %}">
+                    Delete Discount
+                </a>
+            </td>
+            </tr>
+            {% empty %}
+            <th scope="row">Empty</th>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div>
+        <a href='{%url "create-discount" %}' type="button" class="btn btn-lg btn-primary" >Create New Discount</a>
+    </div>
+    </div>
+{% endblock %}

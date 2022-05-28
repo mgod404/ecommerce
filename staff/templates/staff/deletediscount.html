@@ -1,0 +1,25 @@
+{% extends "stafftemplate.html" %}
+
+{%block title%}Delete Discount{% endblock%}
+
+{% block content %}
+<div class='d-flex flex-row justify-content-center'>
+    <div class='card p-4 m-5' style='width:30rem'>
+        <form method="post">{% csrf_token %}
+            <p>Are you sure you want to delete
+
+                {% if discount.discount_in_number > 0 %} 
+                    <b>{{discount.discount_in_number}} EUR</b>
+                {% elif discount.discount_in_percentage > 0 %} 
+                    <b>{{discount.discount_in_percentage}}%</b>
+                {% endif %}
+
+                discount on <b>{{discount.product}}</b>
+                from <b>{{ discount.begins }}</b> till <b>{{ discount.ends }}</b>?</p>
+                {{form.discount.product}}
+            <input class='btn btn-primary' type="submit" value="Confirm">
+        </form>
+    </div>
+</div>
+{% endblock %}
+

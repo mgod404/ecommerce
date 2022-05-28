@@ -1,15 +1,41 @@
+from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import redirect
-from api.models import Order, ProductOrdered, Product
-from .forms import OrderModelForm, QuantityModelForm, DeleteProductOrderedForm, NewProductModelForm
+from django.shortcuts import redirect, get_object_or_404
+from api.models import Order, ProductOrdered, Product, Discount
+from .forms import DiscountForm, DiscountUpdateForm, OrderModelForm, QuantityModelForm, DeleteProductOrderedForm, NewProductModelForm
+
+
 class UserLoggedInMixin(LoginRequiredMixin):
     login_url = '/staff/'
     redirect_field_name = login_url
 
+
+class UpdateDiscountView(UserLoggedInMixin,UpdateView):
+    template_name = 'staff/updatediscount.html'
+    form_class = DiscountUpdateForm
+    queryset = Discount.objects.all()
+    success_url = '/staff/home/discounts/'
+
+class DeleteDiscountView(UserLoggedInMixin, DeleteView):
+    template_name = 'staff/deletediscount.html'
+    model = Discount
+    success_url = '/staff/home/discounts/'
+
+class DiscountsView(UserLoggedInMixin, ListView):
+    template_name = "staff/discounts.html"
+    model = Discount
+    paginate_by = 100
+    ordering = 'ends'
+
+class CreateNewDiscountView(UserLoggedInMixin, CreateView):
+    template_name = 'staff/createnewdiscount.html'
+    form_class = DiscountForm
+    queryset = Discount.objects.all()
+    success_url = '/staff/home/discounts/'
 
 class CreateNewProductView(UserLoggedInMixin, CreateView):
     template_name = 'staff/createnewproduct.html'

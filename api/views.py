@@ -1,4 +1,5 @@
 from decimal import *
+from datetime import date
 import json
 
 from django.conf import settings
@@ -36,6 +37,17 @@ class ProductSearchFilter(drfilters.FilterSet):
     class Meta:
         model = Product
         fields = ['price','brand','category']
+
+
+class HomeView(generics.ListAPIView):
+    queryset_discounts = Discount.objects.filter(begins__gte=date.today(), ends__gt=date.today())[0:10]
+    serializer_class_discount = DiscountSerializer
+
+    def get(self,request, *args, **kwargs):
+        discounts = self.serializer_class_discount(self.queryset_discounts, many=True)
+        return Response({
+            'discounts': discounts.data,
+        })
 
 
 class SearchView(generics.ListAPIView):
@@ -131,7 +143,10 @@ class CategoryView(generics.ListAPIView):
 
         products = Product.objects.filter(category=category, **get_parameters, **filter_by_price)
 
+        #ordering by property, if you want order in reverse, add '-' in front of word
         if order_by:
+            if order_by[0] == '-':
+                return products.order_by(order_by[1:]).reverse()
             return products.order_by(order_by)
         return products
 

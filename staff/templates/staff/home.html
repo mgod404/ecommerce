@@ -6,22 +6,28 @@
     <div class='d-flex flex-row justify-content-center'>
         <div class='card m-5 p-3'>
             <div class='container'>
-            <div class='row my-2'>
-                <div class='col-auto'>
-                    <a href='{% url "orders" %}' class='btn btn-lg btn-primary'>Orders</a>
+                <div class='row my-2'>
+                    <div class='col-auto'>
+                        <a href='{% url "orders" %}' class='btn btn-lg btn-primary'>Orders</a>
+                    </div>
+                    <div class='col-auto'>
+                        <button type="button" class="btn btn-lg btn-primary" disabled>Customer Chat</button>
+                    </div>
                 </div>
-                <div class='col-auto'>
-                    <button type="button" class="btn btn-lg btn-primary" disabled>Customer Chat</button>
+                <div class="row my-2">
+                    <div class='col-auto'>
+                        <a href='{%url "discounts" %}' type="button" class="btn btn-lg btn-primary" >Discounts</a>
+                    </div>
+                    <div class='col-auto'>
+                        <a href='{%url "create-new-product" %}' type="button" class="btn btn-lg btn-primary" >Create New Product</a>
+                    </div>
+                </div>
+                <div class='row my-2'>
+                    <div class='col-auto'>
+                        <a href='/staff/logout/' class='btn btn-lg btn-primary'>Logout</a>
+                    </div>
                 </div>
             </div>
-            <div class='row my-2'>
-                <div class='col-auto'>
-                    <a href='/staff/logout/' class='btn btn-lg btn-primary'>Logout</a>
-                </div>
-                <div class='col-auto'>
-                    <a href='{%url "create-new-product" %}' type="button" class="btn btn-lg btn-primary" >Create New Product</a>
-                </div>
-            </div>
-            </div>
+        </div>
     </div>
 {% endblock %}

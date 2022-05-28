@@ -1,5 +1,5 @@
-from re import L
-from django.forms import ModelForm
+import datetime
+from django.forms import ModelForm, DateField, ValidationError, DecimalField
 from api.models import *
 class NewProductModelForm(ModelForm):
     class Meta:
@@ -77,3 +77,36 @@ class DeleteProductOrderedForm(ModelForm):
             self.fields[field].widget.attrs.update({
                 'value': '1'
         })
+
+class DiscountUpdateForm(ModelForm):
+    begins = DateField(initial=datetime.date.today)
+    ends = DateField(initial=datetime.date.today() + datetime.timedelta(days=1))
+    discount_in_number = DecimalField(max_digits=9, decimal_places=2, min_value=0,)
+    discount_in_percentage = DecimalField(max_digits=4, decimal_places=2, min_value=0,)
+
+    def clean_begins(self):
+        begins = self.cleaned_data['begins']
+        if begins < datetime.date.today():
+            raise ValidationError("The date cannot be in the past!")
+        return begins
+
+    def clean_ends(self):
+        ends = self.cleaned_data['begins']
+        if ends <= datetime.date.today():
+            raise ValidationError("The date cannot be in the past or today!")
+        return ends
+    class Meta:
+        model = Discount
+        fields = []
+
+    def __init__(self, *args, **kwargs):
+        super(DiscountUpdateForm, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
+
+class DiscountForm(DiscountUpdateForm):
+    class Meta:
+        model = Discount
+        fields = ['product']

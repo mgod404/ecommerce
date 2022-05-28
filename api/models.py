@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date
 
 
 def images_dir_path(instance,filename):
@@ -60,3 +61,10 @@ class CategoryFilter(models.Model):
     filters = models.JSONField()
     def __str__(self) -> str:
         return f'{self.category} Filters'
+
+class Discount(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    begins = models.DateField(default=date.today)
+    ends = models.DateField()
+    discount_in_number = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    discount_in_percentage = models.DecimalField(max_digits=4, decimal_places=2, default=0)
