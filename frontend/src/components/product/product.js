@@ -1,4 +1,4 @@
-import {useContext, React} from "react"
+import { React } from "react"
 import { useNavigate } from "react-router-dom"
 import AddToCardBttnComponent from "../../components/addtocardbttn/addtocardbttn"
 
@@ -6,17 +6,15 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { Card, Row, Col } from "react-bootstrap"
 import './product.scss'
 
-import { IsDesktopScreenContext } from "../../contexts/IsDesktopScreenContext"
 
 const Product = (props) => {
-    const {isDesktopScreen} = useContext(IsDesktopScreenContext);
 
     const getProductOptions = (options) => {
         let index = 0;
         let content = [];
         for (let [key, value] of Object.entries(options)) {
             if(index > 2){break;}
-            if(isDesktopScreen){
+            if(props.isDesktopScreen){
                 content.push(<ul key={index} className="options"> {key}: {value} </ul>);
             }else {
                 content.push(<span key={index} className='product-details-options'> {key}: {value} |</span>);
@@ -28,7 +26,7 @@ const Product = (props) => {
 
     const navigate = useNavigate();
 
-    return isDesktopScreen ? (
+    return props.isDesktopScreen ? (
             <Card onClick={() => navigate(`/p/${props.data.id}`)} className='on-hover-desktop'>
                 <Card.Img src={props.data.picture}/>
                 <Card.Body className='d-flex flex-column'>
@@ -36,7 +34,7 @@ const Product = (props) => {
                         <div className='product-card-body pb-2'>{getProductOptions(props.data.options)}</div>
                     <Row>
                         <Col className='row justify-content-center align-content-center'>{props.data.price} EUR</Col>
-                        <Col>
+                        <Col className='d-flex justify-content-end'>
                             <AddToCardBttnComponent
                                 id={props.data.id}
                                 data={props.data}>
@@ -62,10 +60,12 @@ const Product = (props) => {
                         </Card.Text>
                         <div className='d-flex flex-row justify-content-between'>
                             <div className='d-flex align-items-center'>{props.data.price} EUR</div>
-                            <AddToCardBttnComponent 
-                                id={props.data.id}
-                                data={props.data}>
-                            </AddToCardBttnComponent>
+                            <div className='me-3'>
+                                <AddToCardBttnComponent 
+                                    id={props.data.id}
+                                    data={props.data}>
+                                </AddToCardBttnComponent>
+                            </div>
                         </div>
                     </Card.Body>
         </Card>

@@ -14,7 +14,7 @@ const IsDesktopContextProvider = (props) => {
     }
 
     return(
-        <IsDesktopScreenContext.Provider value={{isDesktopScreen}}>
+        <IsDesktopScreenContext.Provider value={{isDesktopScreen, setIsDesktopScreen}}>
             {props.children}
         </IsDesktopScreenContext.Provider>
     )

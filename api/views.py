@@ -1,9 +1,11 @@
 from decimal import *
-from datetime import date
+from datetime import date, timedelta
 import json
 
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.utils import timezone
+from django.db.models import Count
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
@@ -40,13 +42,44 @@ class ProductSearchFilter(drfilters.FilterSet):
 
 
 class HomeView(generics.ListAPIView):
-    queryset_discounts = Discount.objects.filter(begins__gte=date.today(), ends__gt=date.today())[0:10]
+    queryset_discounts = Discount.objects \
+        .filter(begins__lte=date.today(), ends__gt=date.today()) \
+        .select_related()[0:10]
     serializer_class_discount = DiscountSerializer
+    serializer_class_popular_products = MostPopularProductsOrderedSerializer
+
+    def get_queryset_most_popular_products_ordered(self):
+        return ProductOrdered.objects \
+            .filter(
+                order_id__date_of_order__lte=timezone.now() - timedelta(days=30),
+                product__quantity__gt=0
+            ) \
+            .values(
+                "product__brand",
+                "product__model",
+                "product__options",
+                "product__price",
+                "product__quantity",
+                "product__picture"
+            ) \
+            .annotate(Count("product_id")) \
+            .order_by("product_id__count") \
+            .reverse()[0:10]
 
     def get(self,request, *args, **kwargs):
-        discounts = self.serializer_class_discount(self.queryset_discounts, many=True)
+        discounts = self.serializer_class_discount(
+            self.queryset_discounts,
+            many=True,
+            context={"request": request}
+        )
+        most_popular = self.serializer_class_popular_products(
+            self.get_queryset_most_popular_products_ordered(),
+            many=True,
+            context={"request": request}
+        )
         return Response({
             'discounts': discounts.data,
+            'most_popular': most_popular.data
         })
 
 
@@ -120,7 +153,7 @@ class ProductView(generics.GenericAPIView):
 
 class CategoryView(generics.ListAPIView):
     serializer_class = CategorySerializer
-    serializer_class_filters = CategoryFilterSerializer
+    serializer_class_discounts = CategoryDiscountSerializer
 
     def get_queryset(self):
         get_parameters = self.request.GET.copy()
@@ -150,23 +183,17 @@ class CategoryView(generics.ListAPIView):
             return products.order_by(order_by)
         return products
 
+    def get_queryset_discounts(self):
+        category = self.kwargs['category']
+        return Discount.objects.filter(product__category=category,begins__lte=date.today(), ends__gt=date.today())
+
     def get(self,request, *args, **kwargs):
         category = self.serializer_class(self.get_queryset(),context={"request": request}, many=True)
+        discounts = self.serializer_class_discounts(self.get_queryset_discounts(), many=True)
         return Response({
             'result': category.data,
+            'discounts': discounts.data
         })
-
-
-class CategoryFiltersView(generics.GenericAPIView):
-    serializer_class = CategoryFilterSerializer
-
-    def get_queryset(self, category=None):
-        queryset = CategoryFilter.objects.get(category = self.kwargs['category'])
-        return queryset
-
-    def get(self, request, *args, **kwargs):
-        options = self.serializer_class(self.get_queryset())
-        return Response(options.data)
 
 
 class NewOrderView(generics.CreateAPIView):

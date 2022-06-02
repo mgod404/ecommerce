@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useContext } from "react";
 
 import './category.scss';
 
@@ -6,7 +6,10 @@ import NavbarComponent from '../../components/navbar/navbar';
 import Product from '../../components/product/product';
 import { Form } from "react-bootstrap";
 
+import { IsDesktopScreenContext } from "../../contexts/IsDesktopScreenContext";
+
 const Category = (props) => {
+    const {isDesktopScreen} = useContext(IsDesktopScreenContext);
     const [productData, setProductData] = useState(null);
     const [productFilters, setProductFilters] = useState({
         'brand__in': [],
@@ -60,27 +63,29 @@ const Category = (props) => {
                 searchParams={searchParams}
                 setSearchParams={setSearchParams}
                 />
-                <div className='d-flex flex-row justify-content-center'>
-                    <div className="fs-5 text-center d-flex align-items-center">Sort by</div>
-                    <Form.Select 
-                        aria-label='--' 
-                        className='m-2 sort-by-width' 
-                        defaultValue=''
-                        onChange={sortProducts}
-                        >
-                        <option value=''></option>
-                        <option value='price'>Price - Ascending</option>
-                        <option value='-price'>Price - Descending</option>
-                    </Form.Select>
-                </div>
-                <div className='wrapper-grid'>
-                    {productData && productData.map(
-                        (productData,index) => 
-                        (<Product
-                            data={productData}
-                            key={index}>
-                        </Product>))}
-                </div>
+            <div className='d-flex flex-row justify-content-center'>
+                <div className="fs-5 text-center d-flex align-items-center">Sort by</div>
+                <Form.Select 
+                    aria-label='--' 
+                    className='m-2 sort-by-width' 
+                    defaultValue=''
+                    onChange={sortProducts}
+                    >
+                    <option value=''></option>
+                    <option value='price'>Price - Ascending</option>
+                    <option value='-price'>Price - Descending</option>
+                </Form.Select>
+            </div>
+            <div className='wrapper-grid'>
+                {productData && productData.map(
+                    (productData,index) => 
+                    (<Product
+                        data={productData}
+                        isDesktopScreen={isDesktopScreen}
+                        key={index}
+                    />
+                    ))}
+            </div>
         </div>
     )
 }

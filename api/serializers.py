@@ -1,10 +1,7 @@
 from .models import *
 from rest_framework import serializers
 
-class DiscountSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Discount
-        fields = '__all__'
+
 
 
 class CategoryFilterSerializer(serializers.ModelSerializer):
@@ -39,6 +36,17 @@ class ProductDetailsSerializer(serializers.ModelSerializer):
         if(obj.quantity == 0):
             return 'out of stock'
 
+class DiscountSerializer(serializers.ModelSerializer):
+    product = ProductDetailsSerializer()
+    class Meta:
+        model = Discount
+        fields = ['ends', 'discount_in_number', 'discount_in_percentage', 'product']
+
+class CategoryDiscountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Discount
+        fields = '__all__'
+
 
 class CategorySerializer(ProductDetailsSerializer):
     in_stock = None
@@ -52,8 +60,51 @@ class NewOrderSerializer(serializers.ModelSerializer):
         model = Order
         exclude = ['total_price']
 
+class MostPopularProductsOrderedSerializer(serializers.Serializer):
+    product__brand = serializers.CharField(max_length=20)
+    product__model = serializers.CharField(max_length=30)
+    product__options = serializers.JSONField()
+    product__price = serializers.DecimalField(max_digits=7, decimal_places=2)
+    #picture field on "ImageField" always returned to null,
+    #so I've made a walkaround 
+    product__picture = serializers.SerializerMethodField()
+    product_id__count = serializers.IntegerField()
+    in_stock = serializers.SerializerMethodField()
+
+    def get_product__picture(self, obj):
+        picture_name = obj['product__picture']
+        request = self.context['request']
+        host = request.build_absolute_uri('/')
+        url = f'{host}media/{picture_name}'
+        return url
+
+    def get_in_stock(self, obj):
+        if(obj['product__quantity'] > 10):
+            return 'in stock'
+        if(obj['product__quantity'] < 10 and obj['product__quantity'] > 0):
+            return 'low stock'
+        if(obj['product__quantity'] == 0):
+            return 'out of stock'
+# class MostPopularProductsOrderedSerializer(serializers.ModelSerializer):
+#     product = ProductDetailsSerializer()
+#     # in_stock = serializers.SerializerMethodField()
+#     # def get_in_stock(self, obj):
+#     #     if(obj['product__quantity'] > 10):
+#     #         return 'in stock'
+#     #     if(obj['product__quantity'] < 10 and obj['product__quantity'] > 0):
+#     #         return 'low stock'
+#     #     if(obj['product__quantity'] == 0):
+#     #         return 'out of stock'
+#     class Meta:
+#         model = ProductOrdered
+#         fields= 
+
 
 class ProductOrderedSerializer(serializers.ModelSerializer):
+    def validate_quantity(self, quantity):
+        if quantity < 1:
+            raise serializers.ValidateError('Out of stock')
+        return quantity
     class Meta:
         model = ProductOrdered
         fields = '__all__'

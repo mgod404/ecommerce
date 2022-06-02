@@ -79,25 +79,9 @@ class DeleteProductOrderedForm(ModelForm):
         })
 
 class DiscountUpdateForm(ModelForm):
-    begins = DateField(initial=datetime.date.today)
-    ends = DateField(initial=datetime.date.today() + datetime.timedelta(days=1))
-    discount_in_number = DecimalField(max_digits=9, decimal_places=2, min_value=0,)
-    discount_in_percentage = DecimalField(max_digits=4, decimal_places=2, min_value=0,)
-
-    def clean_begins(self):
-        begins = self.cleaned_data['begins']
-        if begins < datetime.date.today():
-            raise ValidationError("The date cannot be in the past!")
-        return begins
-
-    def clean_ends(self):
-        ends = self.cleaned_data['begins']
-        if ends <= datetime.date.today():
-            raise ValidationError("The date cannot be in the past or today!")
-        return ends
     class Meta:
         model = Discount
-        fields = []
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super(DiscountUpdateForm, self).__init__(*args, **kwargs)
@@ -109,4 +93,5 @@ class DiscountUpdateForm(ModelForm):
 class DiscountForm(DiscountUpdateForm):
     class Meta:
         model = Discount
-        fields = ['product']
+        fields = '__all__'
+
