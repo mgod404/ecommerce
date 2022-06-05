@@ -1,5 +1,6 @@
 from django.urls import path, include
 from .views import *
+from api.views import OptionView
 
 urlpatterns = [
     path('', LoginView.as_view()),
@@ -13,6 +14,7 @@ urlpatterns = [
     path('delete_ordered_product/<int:pk>/', DeleteOrderedProductView.as_view(), name='delete-product-ordered'),
 
     path('home/create_new_product/', CreateNewProductView.as_view(), name='create-new-product'),
+    path('options/<str:category>/', OptionView.as_view()),
 
     path('home/discounts/', DiscountsView.as_view(), name='discounts'),
     path('home/discounts/create_new_discount/', CreateNewDiscountView.as_view(), name='create-discount'),

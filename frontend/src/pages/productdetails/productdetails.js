@@ -105,9 +105,10 @@ const ProductDetails = () => {
             </div>
             <div className="flex-container">
                 <Card className="product-description">
+                    <Card.Title className="m-3">Description</Card.Title>
                     <Card.Body>
                         <Card.Text>
-                            {productDetailsData.description}
+                            {productDetailsData.product.description}
                         </Card.Text>
                     </Card.Body>
                 </Card>

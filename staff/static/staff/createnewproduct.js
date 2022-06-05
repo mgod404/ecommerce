@@ -1,8 +1,9 @@
+
 let optionsObj = {};
 
 const generateOptions = async () => {
     const category = document.getElementById('mockupCategoryId').value;
-    const response = await fetch(`http://127.0.0.1:8000/api/options/${category}/`);
+    const response = await fetch(`/staff/options/${category}/`);
     const jsonres = await response.json()
     const options = await jsonres.options
 
