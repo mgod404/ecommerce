@@ -1,12 +1,16 @@
 import {React, useContext, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { CartContext } from "../../contexts/CartContext"
 
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { Card, Col, Row, InputGroup, FormControl, Form, Button } from "react-bootstrap"
+import { Card, Col, Row, InputGroup, FormControl, Form, Button, Alert } from "react-bootstrap"
 import './order.scss'
+import { API_URL } from "../../CONFIG"
 
 const OrderComponent = () => {
+    const navigate = useNavigate();
     const {cart, setProductQuantity, removeProductFromCart} = useContext(CartContext);
+    const {alert, setAlert} = useState('');
 
     const countTotal = () => {
         let sum = 0;
@@ -33,18 +37,22 @@ const OrderComponent = () => {
 
     const postCart = async (orderId) => {
         const requestCart = cart.map((product) => ({order:orderId, quantity: product.quantity, product: product.id}))
-        const response = await fetch(`http://127.0.0.1:8000/api/productordered/`, {
+        const response = await fetch(`${API_URL}/productordered/`, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(requestCart)
         })
-        const data = await response.json();
-        console.log(data.status);
+        if(response.status === 201){
+            navigate(`/payment/${orderId}/`);
+        } else {
+            const data = await response.json();
+            setAlert(data.error);
+        }
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/neworder/`, {
+            const response = await fetch(`${API_URL}/neworder/`, {
                 method: 'POST',
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(form)
@@ -210,9 +218,11 @@ const OrderComponent = () => {
                                     onChange={handleTermsAndConditionsChange}/>
                             </Form.Group>
 
+                            {alert ? (<Alert variant="danger">{alert}</Alert>) : ''}
                             <Button variant="primary" type="submit">
                                 Submit
                             </Button>
+
                         </Form>
                     </Card.Body>
                 </Card>

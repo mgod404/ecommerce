@@ -1,3 +1,13 @@
+.old-price{
+    font-size: 1rem;
+    color:gray;
+    text-decoration: line-through;
+}
+
+.discount-price{
+    color:rgb(25, 212, 0)
+}
+
 .details-wrapper-grid{
     margin-top: 2rem;
     display: grid;

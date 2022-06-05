@@ -11,13 +11,21 @@ const AddToCardBttnComponent = (props) => {
     const { addToCart } = useContext(CartContext); 
     const {isDesktopScreen} = useContext(IsDesktopScreenContext);
 
+    const addToCartData = () => {
+        if(!props.discountedPrice){
+            return props.data
+        } else {
+            return {...props.data, price: props.discountedPrice}
+        }
+    }
+
     return(
         isDesktopScreen? (
         <Button variant="primary" 
                 className='mt-auto' 
                 onClick={(event) =>{
                     event.stopPropagation();
-                    addToCart(props.data);
+                    addToCart(addToCartData());
                 }}>Add To Cart
         </Button>
         ) : (
@@ -25,7 +33,7 @@ const AddToCardBttnComponent = (props) => {
                 className='mt-auto' 
                 onClick={(event) =>{
                     event.stopPropagation();
-                    addToCart(props.data);
+                    addToCart(addToCartData());
                 }}><i className="bi bi-cart-plus"></i>
         </Button>
         )

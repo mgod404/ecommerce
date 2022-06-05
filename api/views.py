@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.db.models import Count
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from requests import delete
 
 from rest_framework import generics, status, filters
 from rest_framework.views import APIView
@@ -44,7 +45,7 @@ class ProductSearchFilter(drfilters.FilterSet):
 class HomeView(generics.ListAPIView):
     queryset_discounts = Discount.objects \
         .filter(begins__lte=date.today(), ends__gt=date.today()) \
-        .select_related()[0:10]
+        .select_related()
     serializer_class_discount = DiscountSerializer
     serializer_class_popular_products = MostPopularProductsOrderedSerializer
 
@@ -55,6 +56,7 @@ class HomeView(generics.ListAPIView):
                 product__quantity__gt=0
             ) \
             .values(
+                "product_id",
                 "product__brand",
                 "product__model",
                 "product__options",
@@ -83,12 +85,26 @@ class HomeView(generics.ListAPIView):
         })
 
 
+class CategoryFiltersView(generics.GenericAPIView):
+    serializer_class = CategoryFilterSerializer
+
+    def get_queryset(self, category=None):
+        queryset = CategoryFilter.objects.get(category = self.kwargs['category'])
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        options = self.serializer_class(self.get_queryset())
+        return Response(options.data)
+
+
 class SearchView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = CategorySerializer
     filter_backends = [DjangoFilterBackend ,filters.OrderingFilter]
     ordering_fields = ['price']
     filterset_class = ProductSearchFilter
+
+
 class OrderStatusView(APIView):
     def get(self,request, orderid= None):
         order = Order.objects.get(id=orderid)
@@ -145,10 +161,21 @@ class OptionView(generics.GenericAPIView):
 
 class ProductView(generics.GenericAPIView):
     def get(self,request,format=None,pk=None):
-        id = pk 
+        id = pk
+
         product = Product.objects.get(id=id)
         serializer = ProductDetailsSerializer(product, context={"request": request})
-        return Response(serializer.data)
+
+        try:
+            discount = Discount.objects.get(product__id=id)
+            serializer_discount = CategoryDiscountSerializer(discount)
+            return Response({
+                "product": serializer.data,
+                "discount": serializer_discount.data
+            })
+        except Discount.DoesNotExist:
+            return Response({"product" : serializer.data})
+
 
 
 class CategoryView(generics.ListAPIView):
@@ -212,6 +239,18 @@ class CreateProductOrderedView(generics.CreateAPIView):
         for product in request.data:
             serializer = self.get_serializer(data=product)
             serializer.is_valid(raise_exception=True)
+
+            valid_product = serializer.validated_data['product']
+            if(valid_product.quantity < serializer.validated_data['quantity']):
+                all_products_for_this_order = ProductOrdered.objects.filter(
+                    order=serializer.validated_data['order']
+                )
+                all_products_for_this_order.delete()
+                return Response(
+                    {"error": "One of the products you've tried to order, is out of stock"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
             self.perform_create(serializer)
             response_list.append(serializer.data)
         headers = self.get_success_headers(serializer.data)

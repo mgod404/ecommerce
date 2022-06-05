@@ -9,6 +9,7 @@ urlpatterns = [
     path('options/<str:category>/', views.OptionView.as_view()),
     path('o/<int:orderid>/', views.OrderStatusView.as_view()),
     path('paymentvalidation/', views.ProcessWebhookView.as_view()),
+    path('categoryfilters/<str:category>/', views.CategoryFiltersView.as_view()),
     path('search/', views.SearchView.as_view()),
     path('home/', views.HomeView.as_view())
 ]

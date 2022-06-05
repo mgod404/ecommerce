@@ -1,7 +1,7 @@
-from unicodedata import category
+from datetime import date
 from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
-from .models import Order, Product, ProductOrdered, CategoryFilter
+from .models import Order, Product, ProductOrdered, CategoryFilter, Discount
 
 
 @receiver(pre_save, sender=ProductOrdered)
@@ -17,7 +17,22 @@ def update_product_quantity(sender, instance, **kwargs):
 def update_total_price(sender,instance, **kwargs):
     ordered_product_in_db = sender.objects.filter(id=instance.id)
     new_quantity = instance.quantity
-    product_price = instance.product.price
+
+    #check for discounts
+    try:
+        discount = Discount.objects.get(
+            product_id=instance.product.id,
+            begins__lte=date.today(), 
+            ends__gt=date.today()
+        )
+        if(discount.discount_in_number > 0):
+            product_price = instance.product.price - discount.discount_in_number
+        if(discount.discount_in_percentage > 0):
+            percentage_discount = discount.discount_in_percentage / 100
+            product_price = instance.product.price * (1 - percentage_discount)
+    except Discount.DoesNotExist:
+        product_price = instance.product.price
+
     order = Order.objects.get(id=instance.order_id)
 
     if not ordered_product_in_db:

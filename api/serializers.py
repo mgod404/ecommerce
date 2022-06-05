@@ -45,7 +45,7 @@ class DiscountSerializer(serializers.ModelSerializer):
 class CategoryDiscountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Discount
-        fields = '__all__'
+        exclude = ['id', 'begins']
 
 
 class CategorySerializer(ProductDetailsSerializer):
@@ -61,6 +61,7 @@ class NewOrderSerializer(serializers.ModelSerializer):
         exclude = ['total_price']
 
 class MostPopularProductsOrderedSerializer(serializers.Serializer):
+    product_id = serializers.IntegerField()
     product__brand = serializers.CharField(max_length=20)
     product__model = serializers.CharField(max_length=30)
     product__options = serializers.JSONField()
@@ -85,19 +86,6 @@ class MostPopularProductsOrderedSerializer(serializers.Serializer):
             return 'low stock'
         if(obj['product__quantity'] == 0):
             return 'out of stock'
-# class MostPopularProductsOrderedSerializer(serializers.ModelSerializer):
-#     product = ProductDetailsSerializer()
-#     # in_stock = serializers.SerializerMethodField()
-#     # def get_in_stock(self, obj):
-#     #     if(obj['product__quantity'] > 10):
-#     #         return 'in stock'
-#     #     if(obj['product__quantity'] < 10 and obj['product__quantity'] > 0):
-#     #         return 'low stock'
-#     #     if(obj['product__quantity'] == 0):
-#     #         return 'out of stock'
-#     class Meta:
-#         model = ProductOrdered
-#         fields= 
 
 
 class ProductOrderedSerializer(serializers.ModelSerializer):

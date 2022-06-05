@@ -1,18 +1,3 @@
-// .wrapper-grid{
-//     max-height: 27rem;
-//     display:grid;
-//     grid-template-columns: repeat(auto-fit, 27rem);
-//     grid-template-rows: 1;
-//     justify-content: left;
-// }
-
-// @media (min-width: 600px ){
-//     .wrapper-grid{
-//         max-height: 18rem;
-//         grid-template-columns: repeat(auto-fit, 18rem);
-//         grid-template-rows:1;
-//     }
-// }
 
 .wrapper-flex{
     height: 28rem;
@@ -30,13 +15,13 @@
 
 @media (min-width: 600px ){
     .wrapper-flex{
-        height: 30rem;
+        height: 28rem;
         display:flex;
         justify-content: left;
         overflow-x:auto;
     }
     .item-wrapper{
-        width: 20rem;
+        width: 17rem;
         margin-right: 1rem;
         padding-top: 1rem;
     }

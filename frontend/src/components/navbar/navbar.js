@@ -5,9 +5,9 @@ import "bootstrap-icons/font/bootstrap-icons.css"
 import { Navbar, Container, Nav, Button, NavDropdown } from "react-bootstrap"
 import './navbar.scss';
 import NavbarCartComponent from "../navbarcart/navbarcart"
-import FilterComponent from "../filter/filter";
+import FilterComponent from "../filter/filter"
 
-import { IsDesktopScreenContext } from "../../contexts/IsDesktopScreenContext";
+import { IsDesktopScreenContext } from "../../contexts/IsDesktopScreenContext"
 
 const NavbarComponent = (props) => {
     const navigate = useNavigate();

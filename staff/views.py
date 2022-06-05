@@ -45,7 +45,7 @@ class CreateNewProductView(UserLoggedInMixin, CreateView):
 
 class DeleteOrderedProductView(UserLoggedInMixin, DeleteView):
     template_name = 'staff/deleteproductordered.html'
-    form_class = DeleteProductOrderedForm
+    model = ProductOrdered
     queryset = ProductOrdered.objects.all()
     success_url = '/staff/home/orders/'
 

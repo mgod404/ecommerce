@@ -2,7 +2,8 @@ import { React, useState, useEffect } from 'react'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Card, CloseButton, Form, FormControl, Button } from "react-bootstrap"
-import './filter.scss';
+import './filter.scss'
+import { API_URL } from '../../CONFIG'
 
 const FilterComponent = (props) => {
     const [filters, setFilters] = useState('');
@@ -110,12 +111,12 @@ const FilterComponent = (props) => {
     }
 
     useEffect( () => {
-            fetch(`http://127.0.0.1:8000/api/categoryfilters/${props.category}/`)
+            fetch(`${API_URL}/categoryfilters/${props.category}/`)
                 .then(res => res.json())
                 .then(data => setFilters(data.filters));
         },[props]);
 
-    return( props.filterTrigger && filters ? (
+    return( props.filterTrigger ? (
         <div className='filter-background'>
             <Card className='d-flex flex-column justify-content-center p-3'>
 
