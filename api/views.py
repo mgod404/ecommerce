@@ -212,10 +212,10 @@ class CategoryView(generics.ListAPIView):
 
     def get_queryset_discounts(self):
         category = self.kwargs['category']
-        return Discount.objects.filter(product__category=category,begins__lte=date.today(), ends__gt=date.today())
+        return Discount.objects.filter(product__category=category, begins__lte=date.today(), ends__gt=date.today())
 
     def get(self,request, *args, **kwargs):
-        category = self.serializer_class(self.get_queryset(),context={"request": request}, many=True)
+        category = self.serializer_class(self.get_queryset(), context={"request": request}, many=True)
         discounts = self.serializer_class_discounts(self.get_queryset_discounts(), many=True)
         return Response({
             'result': category.data,

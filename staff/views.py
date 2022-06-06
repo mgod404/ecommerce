@@ -1,12 +1,11 @@
-from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect
 from api.models import Order, ProductOrdered, Product, Discount
-from .forms import DiscountForm, DiscountUpdateForm, OrderModelForm, QuantityModelForm, DeleteProductOrderedForm, NewProductModelForm
+from .forms import DiscountForm, DiscountUpdateForm, OrderModelForm, QuantityModelForm, NewProductModelForm
 
 
 class UserLoggedInMixin(LoginRequiredMixin):
