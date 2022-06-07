@@ -1,25 +1,60 @@
-import { React, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import './home.scss';
 import NavbarComponent from '../../components/navbar/navbar';
 import Product from '../../components/product/product'
 import { API_URL } from "../../CONFIG";
 
 
+type StringDictionary = {
+    [key: string]: string[];
+}
+interface ProductInterface {
+    id: number,
+    in_stock: string,
+    category?: string,
+    brand: string,
+    model: string,
+    options: StringDictionary,
+    price: number,
+    picture: string,
+    description?: string
+}
+interface Discount {
+    ends: Date,
+    discount_in_number: number,
+    discount_in_percentage: number,
+    product: ProductInterface
+}
+interface MostPopularRaw {
+    product_id: number,
+    product__brand: string,
+    product__model: string,
+    product__options: StringDictionary,
+    product__price: number,
+    product__picture: string,
+    product_id__count: number,
+    in_stock: string
+}
+interface FetchedData {
+    most_popular: ProductInterface[],
+    discounts: Discount[]
+}
+
 const Home = () => {
-    const [fetchedData, setFetchedData] = useState();
+    const [fetchedData, setFetchedData] = useState<FetchedData>();
 
     const getHomeData = async () => {
         const response = await fetch(`${API_URL}/home/`);
         if(response.status === 200){
             const data = await response.json();
-            const mostPopular = await changeKeyNames(data.most_popular);
+            const mostPopular: ProductInterface[] = await changeKeyNames(data.most_popular);
             const newData = await {...data, most_popular: mostPopular};
             setFetchedData(newData);
         }
     }
 
     // Change key names so they fit to product component
-    const changeKeyNames = (mostPopularProducts) => {
+    const changeKeyNames = (mostPopularProducts:MostPopularRaw[]):ProductInterface[] => {
         return mostPopularProducts.map(product => {
             return {
                 "id": product.product_id,
@@ -33,7 +68,8 @@ const Home = () => {
         });
     };
 
-    const getDiscount = (productId) =>{
+    const getDiscount = (productId: number) =>{
+        if(!fetchedData) return;
         const discountForProduct = fetchedData.discounts.filter((discount) => discount.product.id === productId);
         if(discountForProduct.length > 0){
             return {

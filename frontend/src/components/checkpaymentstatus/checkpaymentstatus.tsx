@@ -1,11 +1,15 @@
-import { React, useState } from 'react'
+import { useState } from 'react'
 
-import 'bootstrap/dist/css/bootstrap.min.css'
 import './checkpaymentstatus.scss'
 
 import { API_URL } from '../../CONFIG'
 
-const CheckPaymentStatusComponent = (props) => {
+
+interface Props {
+    orderId: number;
+}
+
+const CheckPaymentStatusComponent: React.FC<Props> = (props) => {
     const [orderState, setOrderState] = useState('WAITING_FOR_PAYMENT');
 
     const updateOrderState = async () => {
@@ -16,7 +20,7 @@ const CheckPaymentStatusComponent = (props) => {
             clearInterval(interval);
         }
     } 
-    let interval = setInterval(updateOrderState(), 3000);
+    let interval = setInterval(() => updateOrderState(), 3000);
 
 
     return(

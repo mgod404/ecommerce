@@ -1,4 +1,4 @@
-import {React, useContext } from "react"
+import { useContext } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { CartContext } from "../../contexts/CartContext"
@@ -7,13 +7,15 @@ import "bootstrap-icons/font/bootstrap-icons.css"
 import {NavDropdown,Button, Image, FormControl, InputGroup, DropdownButton } from "react-bootstrap"
 import './navbarcart.scss'
 
+import { CartInterface } from "../../pages/order/order"
+
 const NavbarCartComponent = () => {
     const {cart, removeProductFromCart, setProductQuantity} = useContext(CartContext);
     const navigate = useNavigate();
 
     const countTotal = () => {
         let sum = 0;
-        cart.forEach(element => sum = sum + (element.quantity * element.price));
+        cart.forEach((element:CartInterface) => sum = sum + (element.quantity * element.price));
         return sum
     };
 
@@ -22,7 +24,7 @@ const NavbarCartComponent = () => {
     return(
         cart.length !== 0 ? (
             <DropdownButton align='end' title={navDropdownTitle} className='dropdown-menu-end ms-2' style={{color:'yellow'}}>
-                {cart.map((product,index) => (
+                {cart.map((product:CartInterface,index:number) => (
                 <NavDropdown.Item className='d-flex flex-row justify-content-center align-items-center' key={index}>
                     <div className='d-flex'>
                         <Image 
@@ -41,13 +43,13 @@ const NavbarCartComponent = () => {
                         <InputGroup>
                             <FormControl
                             style={{width:'3rem'}}
-                            placeholder={product.quantity}
-                            onClick={(e) => e.stopPropagation()}
-                            onChange={(e) =>{
+                            placeholder={product.quantity as unknown as string}
+                            onClick={(e:React.MouseEvent<HTMLInputElement>) => e.stopPropagation()}
+                            onChange={(e:React.ChangeEvent<HTMLInputElement>) =>{
                                 setProductQuantity(product.id, e.target.value);
                                 e.target.value = '';
                             }}
-                            minvalue='1'
+                            min="1"
                             />
                         </InputGroup>
                     </div>
@@ -59,7 +61,7 @@ const NavbarCartComponent = () => {
                         <Button 
                             className='bi bi-trash align-self-end'
                             style={{width:'3rem'}}
-                            onClick={(e) =>{
+                            onClick={(e:React.MouseEvent<HTMLButtonElement>) =>{
                                 e.stopPropagation();
                                 removeProductFromCart(product.id)}}>
                         </Button>
@@ -72,7 +74,7 @@ const NavbarCartComponent = () => {
                         <div className='text-center'>Total:</div>
                         <div className='text-center'>{countTotal()} EUR</div>
                     </div>
-                    <Button onClick={(e) => {
+                    <Button onClick={(e:React.MouseEvent<HTMLButtonElement>) => {
                         e.stopPropagation();
                         navigate(`/finalizeorder/`)
                         }}>Place an Order</Button>

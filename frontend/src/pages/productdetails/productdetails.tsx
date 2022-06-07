@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import NavbarComponent from '../../components/navbar/navbar';
@@ -8,13 +8,31 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Card, Row, Col } from "react-bootstrap";
 import './productdetails.scss';
 import { API_URL } from "../../CONFIG";
+import { ProductInterface } from "../category/category";
+
+type StringDictionary = {
+    [key: string]: string[];
+}
+interface ProductWithDescription extends ProductInterface{
+    description: string
+}
+interface ProdDetailDiscount {
+    ends: Date,
+    discount_in_number: number,
+    discount_in_percentage: number,
+    product: number
+}
+interface FetchedDataInterface {
+    product: ProductWithDescription,
+    discount?: ProdDetailDiscount
+}
 
 const ProductDetails = () => {
     const params = useParams();
 
-    const [fetchedData, setFetchedData] = useState(null);
-    const [productDetailsData, setproductDetailsData] = useState(null);
-    const [oldPrice, setOldPrice] = useState(null);
+    const [fetchedData, setFetchedData] = useState<FetchedDataInterface>();
+    const [productDetailsData, setproductDetailsData] = useState<ProductWithDescription>();
+    const [oldPrice, setOldPrice] = useState<number>();
 
 
     useEffect(() => {
@@ -29,7 +47,8 @@ const ProductDetails = () => {
             return
         }
         if(!fetchedData.discount){
-            setproductDetailsData(fetchedData);
+            const productDetails: ProductWithDescription = fetchedData.product
+            setproductDetailsData(productDetails);
             return
         }
 
@@ -51,12 +70,14 @@ const ProductDetails = () => {
         let newPriceData = {...fetchedData};
         const newPrice = getDiscountedPrice();
         setOldPrice(fetchedData.product.price);
-        newPriceData.product.price = newPrice;
-        setproductDetailsData(newPriceData);
+        if(newPrice){
+            newPriceData.product.price = newPrice;
+        };
+        setproductDetailsData(newPriceData.product);
     },[fetchedData]);
 
-    const getProductOptions = (options) => {
-        let content = [];
+    const getProductOptions = (options:StringDictionary) => {
+        let content: JSX.Element[] = [];
         Object.entries(options)
             .forEach(([key, value], index) => content.push(
                 <ul className='product-details-options' key={index}>{key}: {value}</ul>
@@ -66,38 +87,38 @@ const ProductDetails = () => {
 
 
 
-    return(productDetailsData && 
+    return(productDetailsData ?
         (<div>
             <NavbarComponent></NavbarComponent>
             <div className="details-wrapper-grid">
                     <Card id="picture">
-                        <Card.Img src={productDetailsData.product.picture} />
+                        <Card.Img src={productDetailsData.picture} />
                     </Card>
                     <Card className="text-center">
-                        <Card.Body className='d-flex flex-column'>
+                        <Card.Body className='d-flex flex-column justify-content-between' >
                             <Card.Title className='fs-1'>
-                                {productDetailsData.product.brand} {productDetailsData.product.model}
+                                {productDetailsData.brand} {productDetailsData.model}
                             </Card.Title>
                             {/* <Card.Text className='fs-3'>SELECT OPTIONS</Card.Text> */}
                             <div className='fs-4 pb-4'>
-                                {getProductOptions(productDetailsData.product.options)}
+                                {getProductOptions(productDetailsData.options)}
                             </div>
                             <Row>
                                 <Col>
                                     <div className='fs-3'>
-                                        {fetchedData.discount ? (
+                                        {fetchedData && fetchedData.discount ? (
                                             <div>
                                                 <p className="old-price">{oldPrice} EUR</p>
-                                                <p className="discount-price">{productDetailsData.product.price} EUR</p>
+                                                <p className="discount-price">{productDetailsData.price} EUR</p>
                                             </div>
-                                        ): (<div>{productDetailsData.product.price} EUR</div>)}
+                                        ): (<div>{productDetailsData.price} EUR</div>)}
                                     </div>
                                 </Col>
                                 <Col>
                                     <AddToCardBttnComponent
-                                        id={productDetailsData.product.id}
-                                        data={productDetailsData.product}>
-                                    </AddToCardBttnComponent>
+                                        id={productDetailsData.id}
+                                        data={productDetailsData}
+                                    />
                                 </Col>
                             </Row>
                         </Card.Body>
@@ -108,12 +129,12 @@ const ProductDetails = () => {
                     <Card.Title className="m-3">Description</Card.Title>
                     <Card.Body>
                         <Card.Text>
-                            {productDetailsData.product.description}
+                            {productDetailsData.description}
                         </Card.Text>
                     </Card.Body>
                 </Card>
             </div>
-        </div>)
+        </div>) : (<div></div>)
     );
 }
 

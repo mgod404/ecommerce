@@ -1,13 +1,12 @@
-import { React, useContext, useState } from "react"
+import { useContext, useState } from "react"
 import { useParams } from "react-router-dom"
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js"
 import { CartContext } from "../../contexts/CartContext"
 
-import 'bootstrap/dist/css/bootstrap.min.css'
 import { Card } from "react-bootstrap"
 import './payment.scss'
 import CheckPaymentStatusComponent from "../../components/checkpaymentstatus/checkpaymentstatus"
-
+import { CartInterface } from "../order/order"
 
 
 const PaymentComponent = () => {
@@ -17,15 +16,15 @@ const PaymentComponent = () => {
 
     const countTotal = () => {
         let sum = 0;
-        cart.forEach(element => sum = sum + (element.quantity * element.price));
+        cart.forEach((element:CartInterface) => sum = sum + (element.quantity * element.price));
         return sum
     }
 
     return (
     <div className='d-flex flex-row justify-content-center'>
         <Card className='m-5 p-3'>
-            {paypalButtonClicked ? 
-                <CheckPaymentStatusComponent orderId={params.orderid}/> : 
+            { paypalButtonClicked && params.orderid ? 
+                <CheckPaymentStatusComponent orderId={params.orderid as unknown as number}/> : 
                 <div>
                     <Card.Title className='text-center fs-2 text-secondary'>Total Price</Card.Title>
                     <Card.Title className='text-center fs-3'>{countTotal()} EUR</Card.Title>
@@ -41,15 +40,15 @@ const PaymentComponent = () => {
                                 "reference_id": params.orderid,
                                 "amount": {
                                     "currency_code": "EUR",
-                                    "value": countTotal(),
+                                    "value": countTotal().toString(),
                                     "breakdown": {
                                         "item_total": {
                                             "currency_code": "EUR",
-                                            "value": countTotal()
+                                            "value": countTotal().toString()
                                         }
                                     }
                                 },
-                                "items":  cart.map((element) => ({
+                                "items":  cart.map((element:CartInterface) => ({
                                     "name": `${element.brand} ${element.model}`,
                                     "unit_amount": {
                                         "currency_code": "EUR",

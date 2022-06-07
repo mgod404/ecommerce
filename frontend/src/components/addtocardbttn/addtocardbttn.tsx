@@ -1,13 +1,29 @@
-import {React, useContext} from "react"
+import { useContext } from "react"
 
 import { CartContext } from "../../contexts/CartContext"
 import { IsDesktopScreenContext } from "../../contexts/IsDesktopScreenContext"
 
-import "bootstrap-icons/font/bootstrap-icons.css"
 import { Button } from "react-bootstrap"
 import './addtocardbttn.scss'
 
-const AddToCardBttnComponent = (props) => {
+type StringDictionary = {
+    [key: string]: string[];
+}
+interface data{
+    id: number,
+    category?: string,
+    model: string,
+    options: StringDictionary,
+    price: number,
+    picture: string,
+}
+interface Props {
+    discountedPrice?: string,
+    data: data,
+    id: any,
+}
+
+const AddToCardBttnComponent: React.FC<Props> = (props) => {
     const { addToCart } = useContext(CartContext); 
     const {isDesktopScreen} = useContext(IsDesktopScreenContext);
 
@@ -23,7 +39,7 @@ const AddToCardBttnComponent = (props) => {
         isDesktopScreen? (
         <Button variant="primary" 
                 className='mt-auto' 
-                onClick={(event) =>{
+                onClick={(event: React.MouseEvent<HTMLButtonElement>) =>{
                     event.stopPropagation();
                     addToCart(addToCartData());
                 }}>Add To Cart
@@ -31,7 +47,7 @@ const AddToCardBttnComponent = (props) => {
         ) : (
         <Button variant="primary" 
                 className='mt-auto' 
-                onClick={(event) =>{
+                onClick={(event: React.MouseEvent<HTMLButtonElement>) =>{
                     event.stopPropagation();
                     addToCart(addToCartData());
                 }}><i className="bi bi-cart-plus"></i>

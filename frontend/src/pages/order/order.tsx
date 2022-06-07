@@ -1,20 +1,26 @@
-import {React, useContext, useState } from "react"
+import { useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { CartContext } from "../../contexts/CartContext"
 
-import 'bootstrap/dist/css/bootstrap.min.css'
 import { Card, Col, Row, InputGroup, FormControl, Form, Button, Alert } from "react-bootstrap"
 import './order.scss'
+
 import { API_URL } from "../../CONFIG"
+
+import { ProductInterface } from "../../pages/category/category"
+
+export interface CartInterface extends ProductInterface{
+    quantity: number
+}
 
 const OrderComponent = () => {
     const navigate = useNavigate();
     const {cart, setProductQuantity, removeProductFromCart} = useContext(CartContext);
-    const {alert, setAlert} = useState('');
+    const [alert, setAlert] = useState('');
 
     const countTotal = () => {
         let sum = 0;
-        cart.forEach(element => sum = sum + (element.quantity * element.price));
+        cart.forEach((element:CartInterface) => sum = sum + (element.quantity * element.price));
         return sum
     }
 
@@ -29,14 +35,14 @@ const OrderComponent = () => {
         acceptedTerms: false,
     });
 
-    const handleChange = (e) => setForm({...form, [e.target.name]: e.target.value});
-    const handleTermsAndConditionsChange = (e) => 
+    const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => setForm({...form, [e.target.name]: e.target.value});
+    const handleTermsAndConditionsChange = (e:React.ChangeEvent<HTMLInputElement>) => 
         e.target.checked ? 
         setForm({...form, acceptedTerms: true}) : 
         setForm({...form, acceptedTerms:false});
 
-    const postCart = async (orderId) => {
-        const requestCart = cart.map((product) => ({order:orderId, quantity: product.quantity, product: product.id}))
+    const postCart = async (orderId:number) => {
+        const requestCart = cart.map((product:CartInterface) => ({order:orderId, quantity: product.quantity, product: product.id}))
         const response = await fetch(`${API_URL}/productordered/`, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
@@ -46,10 +52,10 @@ const OrderComponent = () => {
             navigate(`/payment/${orderId}/`);
         } else {
             const data = await response.json();
-            setAlert(data.error);
+            setAlert(data.error.toString());
         }
     }
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try{
             const response = await fetch(`${API_URL}/neworder/`, {
@@ -71,7 +77,7 @@ const OrderComponent = () => {
         <div className='d-flex flex-row justify-content-center'>
             <Col style={{maxWidth:'50rem'}}>
                 <Card className='my-3 border-bottom-0'>
-                    {cart !== 0 ? (cart.map((product, index) => (
+                    {cart !== 0 ? (cart.map((product:CartInterface, index:number) => (
                         <Card className='border-start-0 border-top-0 border-end-0' key={index}>
                             <Card.Body className='d-flex flex-row justify-content-between'>
                                     <div className='d-flex flex-fill align-content-center justify-content-center flex-wrap'>
@@ -88,27 +94,29 @@ const OrderComponent = () => {
                                     <div style={{width:'4rem'}} className='d-flex align-content-center justify-content-center flex-wrap mx-2'>
                                         <InputGroup className="d-flex align-content-center flex-wrap">
                                             <FormControl
-                                            style={{bordercolor:'pink'}}
-                                            placeholder={product.quantity}
+                                            style={{borderColor:'pink'}}
+                                            placeholder={product.quantity?.toString()}
                                             type='number'
                                             min = '1'
-                                            onChange={(e) =>{
+                                            onChange={(e:React.ChangeEvent<HTMLInputElement>) =>{
+                                                let doc = document.getElementById(index.toString());
+                                                if(!doc) return;
                                                 if(e.target.value === ''){
                                                     e.stopPropagation();
-                                                    document.getElementById(index).innerText = '';
+                                                    doc.innerText = '';
                                                     return
                                                 }
-                                                if(e.target.value > 0){
+                                                if(e.target.value as unknown as number > 0){
                                                     setProductQuantity(product.id, e.target.value);
-                                                    document.getElementById(index).innerText = '';
+                                                    doc.innerText = '';
                                                     return
                                                 }
                                                 e.stopPropagation();
-                                                document.getElementById(index).innerText = 'Quantity must be higher than 0';
+                                                doc.innerText = 'Quantity must be higher than 0';
                                             }}
                                             /> 
                                         </InputGroup>
-                                        <div style={{color:'red', fontSize:'0.8rem'}} id={index}></div>
+                                        <div style={{color:'red', fontSize:'0.8rem'}} id={index.toString()}></div>
                                     </div>
                                     <div className='d-flex align-content-center justify-content-center flex-wrap'>
                                         <Card.Text className='order-fontsize order-price-width'>

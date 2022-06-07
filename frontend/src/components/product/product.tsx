@@ -1,17 +1,28 @@
-import { React } from "react"
 import { useNavigate } from "react-router-dom"
-import AddToCardBttnComponent from "../../components/addtocardbttn/addtocardbttn"
+import AddToCardBttnComponent from "../addtocardbttn/addtocardbttn"
 
-import 'bootstrap/dist/css/bootstrap.min.css'
 import { Card, Row, Col } from "react-bootstrap"
 import './product.scss'
 
+import { ProductInterface } from '../../pages/category/category'
 
-const Product = (props) => {
+type StringDictionary = {
+    [key: string]: string[]
+}
+interface DiscountData {
+    discount_in_number: number,
+    discount_in_percentage: number,
+}
+interface Props {
+    data: ProductInterface,
+    isDesktopScreen: boolean,
+    discount: DiscountData | null | undefined
+}
+const Product = (props: Props) => {
 
-    const getProductOptions = (options) => {
+    const getProductOptions = (options:StringDictionary) => {
         let index = 0;
-        let content = [];
+        let content:JSX.Element[] = [];
         for (let [key, value] of Object.entries(options)) {
             if(index > 2){break;}
             if(props.isDesktopScreen){
@@ -34,10 +45,10 @@ const Product = (props) => {
         const discountNumber = props.discount.discount_in_number;
         const discountPercentage = props.discount.discount_in_percentage / 100;
         if(discountNumber > 0){
-            return normalPrice - discountNumber;
+            return (normalPrice - discountNumber).toFixed(2);
         };
         if(discountPercentage > 0){
-            return normalPrice * (1 - discountPercentage);
+            return (normalPrice * (1 - discountPercentage)).toFixed(2);
         }
     }
 

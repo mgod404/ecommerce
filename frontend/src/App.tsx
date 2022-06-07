@@ -1,11 +1,11 @@
 import { BrowserRouter,Route,Routes } from 'react-router-dom'
-import Home from './pages/home/home.js'
-import Category from './pages/category/category.js'
-import ProductDetails from '../src/pages/productdetails/productdetails.js'
+import Home from './pages/home/home'
+import Category from './pages/category/category'
+import ProductDetails from './pages/productdetails/productdetails'
 import CartContextProvider from './contexts/CartContext'
-import OrderComponent from './pages/order/order.js'
+import OrderComponent from './pages/order/order'
 import IsDesktopContextProvider from './contexts/IsDesktopScreenContext.js'
-import PaymentComponent from './pages/payment/payment.js'
+import PaymentComponent from './pages/payment/payment'
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
       <CartContextProvider>
       <BrowserRouter>
         <Routes>
-            <Route exact path='/' element={<Home/>} />
+            <Route path='/' element={<Home/>} />
             <Route path='/smartphones' element={<Category category='Smartphone'/>}/>
             <Route path='/laptops' element={<Category category='Laptop'/>}/>
             <Route path='/p/:productid/' element={<ProductDetails/>}/>

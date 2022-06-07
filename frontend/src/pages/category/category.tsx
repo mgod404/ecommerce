@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import './category.scss';
 
@@ -9,31 +9,61 @@ import { API_URL } from "../../CONFIG";
 
 import { IsDesktopScreenContext } from "../../contexts/IsDesktopScreenContext";
 
-const Category = (props) => {
+type StringDictionary = {
+    [key: string]: string[];
+}
+interface Props {
+    category: string,
+}
+export interface SearchParam {
+    name: string,
+    value: string
+}
+export interface ProductInterface {
+    id: number,
+    brand: string,
+    model: string,
+    options: StringDictionary,
+    price: number,
+    picture: string,
+}
+interface Discount {
+    ends: Date,
+    discount_in_number: number,
+    discount_in_percentage: number,
+    product: number,
+}
+interface  ProductData{
+    result: ProductInterface[],
+    discounts: Discount[]
+}
+const Category: React.FC<Props> = (props) => {
     const {isDesktopScreen} = useContext(IsDesktopScreenContext);
-    const [productData, setProductData] = useState(null);
+    const [productData, setProductData] = useState<ProductData>();
     const [productFilters, setProductFilters] = useState({
         'brand__in': [],
         'price_max': '',
         'price_min': '',
         'ordering':''
     });
-    const [searchParams, setSearchParams] = useState([]);
+    const [searchParams, setSearchParams] = useState<SearchParam[] | []>([]);
 
     const fetchProducts = async () => {
         let params = '';
-        Object.entries(searchParams).forEach( ([index, filter]) => {
-            params = params + `${filter.name}=${filter.value}&`;
-        });
+        if(searchParams){
+            Object.entries(searchParams).forEach( ([index, filter]) => {
+                params = params + `${filter.name}=${filter.value}&`;
+            });
+        }
         let fetchURL = new URL(`${API_URL}/c/${props.category}/?${params}`);
         const response = await fetch(fetchURL);
         const data = await response.json();
         setProductData(data);
     }
 
-    const sortProducts = async (e) => {
+    const sortProducts = async (e:React.ChangeEvent<HTMLSelectElement>) => {
         const sortingValue = e.target.value;
-        const localVars = searchParams.filter(filter => filter.name !== "order_by");
+        const localVars = searchParams ? searchParams.filter(filter => filter.name !== "order_by"): [];
         if(sortingValue === ''){
             setSearchParams(localVars);
             return
@@ -45,7 +75,10 @@ const Category = (props) => {
         setSearchParams([...localVars, {name:'order_by', value: sortingValue}]);
     }
 
-    const getDiscount = (productId) =>{
+    const getDiscount = (productId: number) =>{
+        if(!productData){
+            return
+        }
         const discountForProduct = productData.discounts.filter((discount) => discount.product === productId);
         if(discountForProduct.length > 0){
             return {
