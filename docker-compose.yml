@@ -5,7 +5,7 @@ services:
     image: postgres
     volumes:
       - ./data/db:/var/lib/postgresql/data
-  web:
+  backend:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
@@ -14,4 +14,12 @@ services:
       - "8000:8000"
     depends_on:
       - db
-
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/dockerfile
+    command: serve -s build -l 4000
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "4000:4000"

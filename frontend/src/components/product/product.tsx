@@ -53,9 +53,9 @@ const Product = (props: Props) => {
     }
 
     return props.isDesktopScreen ? (
-            <Card onClick={() => navigate(`/p/${props.data.id}`)} className='on-hover-desktop max-height-desktop'>
+            <Card onClick={() => navigate(`/p/${props.data.id}`)} className='on-hover-desktop'>
                 <Card.Img src={props.data.picture}/>
-                <Card.Body className='d-flex flex-column'>
+                <Card.Body className='d-flex flex-column max-height-desktop'>
                     <Card.Title className='product-card-body overflow-hidden'>{props.data.brand} {props.data.model}</Card.Title>
                         <div className='product-card-body pb-2'>{getProductOptions(props.data.options)}</div>
                     <Row>
