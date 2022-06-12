@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useContext, useEffect } from 'react'
+import { CartContext } from "../../contexts/CartContext"
 
 import './checkpaymentstatus.scss'
 
@@ -11,17 +12,24 @@ interface Props {
 
 const CheckPaymentStatusComponent: React.FC<Props> = (props) => {
     const [orderState, setOrderState] = useState('WAITING_FOR_PAYMENT');
+    const {clearCart} = useContext(CartContext);
 
-    const updateOrderState = async () => {
+    const updateOrderState = async (interval:number) => {
         const response = await fetch(`${API_URL}/o/${props.orderId}/`);
         const data = await response.json();
         if (data.order_state === "PAYMENT_RECEIVED"){
             setOrderState(data.order_state);
+            clearCart();
             clearInterval(interval);
         }
     } 
-    let interval = setInterval(() => updateOrderState(), 3000);
 
+    useEffect(() => {
+        let interval = setInterval((interval) => updateOrderState(interval), 3000);
+        return () => {
+            clearInterval(interval);
+        }
+    },[]);
 
     return(
         <div>

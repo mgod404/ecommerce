@@ -5,7 +5,7 @@ import { CartContext } from "../../contexts/CartContext"
 import { Card, Col, Row, InputGroup, FormControl, Form, Button, Alert } from "react-bootstrap"
 import './order.scss'
 
-import { API_URL } from "../../CONFIG"
+import { HOST_URL, API_URL } from "../../CONFIG"
 
 import { ProductInterface } from "../../pages/category/category"
 
@@ -15,7 +15,7 @@ export interface CartInterface extends ProductInterface{
 
 const OrderComponent = () => {
     const navigate = useNavigate();
-    const {cart, setProductQuantity, removeProductFromCart} = useContext(CartContext);
+    const {cart, setProductQuantity, removeProductFromCart, clearCart} = useContext(CartContext);
     const [alert, setAlert] = useState('');
 
     const countTotal = () => {
@@ -82,7 +82,7 @@ const OrderComponent = () => {
                             <Card.Body className='d-flex flex-row justify-content-between'>
                                     <div className='d-flex flex-fill align-content-center justify-content-center flex-wrap'>
                                         <Card.Img 
-                                            src={product.picture} 
+                                            src={`${HOST_URL}${product.picture}`} 
                                             style={{width: '3rem', height:'3rem'}}/>
                                     </div>
                                     <div className='d-flex flex-fill align-content-center justify-content-center flex-wrap'>

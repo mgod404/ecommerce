@@ -68,8 +68,8 @@ def update_filters(sender, instance, created, **kwargs):
         try:
             category_filters = CategoryFilter.objects.get(category=product.category)
 
-            if product.brand not in category_filters.filteres['brand']:
-                category_filters.apend(product.brand)
+            if product.brand not in category_filters.filters['brand']:
+                category_filters.filters['brand'].append(product.brand)
 
             for key in category_filters.filters['options']:
                 if product.options[key] in category_filters.filters['options'][key]:

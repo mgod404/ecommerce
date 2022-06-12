@@ -7,7 +7,7 @@ import AddToCardBttnComponent from "../../components/addtocardbttn/addtocardbttn
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Card, Row, Col } from "react-bootstrap";
 import './productdetails.scss';
-import { API_URL } from "../../CONFIG";
+import { HOST_URL, API_URL } from "../../CONFIG";
 import { ProductInterface } from "../category/category";
 
 type StringDictionary = {
@@ -92,7 +92,7 @@ const ProductDetails = () => {
             <NavbarComponent></NavbarComponent>
             <div className="details-wrapper-grid">
                     <Card id="picture">
-                        <Card.Img src={productDetailsData.picture} />
+                        <Card.Img src={`${HOST_URL}${productDetailsData.picture}`} />
                     </Card>
                     <Card className="text-center">
                         <Card.Body className='d-flex flex-column justify-content-between' >

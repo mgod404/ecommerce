@@ -19,6 +19,7 @@ from django_filters import rest_framework as drfilters
 from django_filters import filters as new_filters
 
 from paypalrestsdk import notifications
+from .sendmail import send_payment_confirmation
 
 from .models import *
 from .serializers import *
@@ -52,7 +53,7 @@ class HomeView(generics.ListAPIView):
     def get_queryset_most_popular_products_ordered(self):
         return ProductOrdered.objects \
             .filter(
-                order_id__date_of_order__lte=timezone.now() - timedelta(days=30),
+                order_id__date_of_order__gte=timezone.now() - timedelta(days=30),
                 product__quantity__gt=0
             ) \
             .values(
@@ -72,7 +73,6 @@ class HomeView(generics.ListAPIView):
         discounts = self.serializer_class_discount(
             self.queryset_discounts,
             many=True,
-            context={"request": request}
         )
         most_popular = self.serializer_class_popular_products(
             self.get_queryset_most_popular_products_ordered(),
@@ -103,6 +103,13 @@ class SearchView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend ,filters.OrderingFilter]
     ordering_fields = ['price']
     filterset_class = ProductSearchFilter
+
+
+class OrderStatusView(APIView):
+    def get(self,request, orderid= None):
+        order = Order.objects.get(id=orderid)
+        serializer = CheckOrderStatusSerializer(order)
+        return Response(serializer.data)
 
 
 class OrderStatusView(APIView):
@@ -147,6 +154,7 @@ class ProcessWebhookView(APIView):
         if Decimal(order.total_price) == Decimal(amount_paid):
             order.order_state = 'PAYMENT_RECEIVED'
             order.save()
+            send_payment_confirmation(order=order)
 
         return HttpResponse()
 
@@ -164,7 +172,7 @@ class ProductView(generics.GenericAPIView):
         id = pk
 
         product = Product.objects.get(id=id)
-        serializer = ProductDetailsSerializer(product, context={"request": request})
+        serializer = ProductDetailsSerializer(product)
 
         try:
             discount = Discount.objects.get(product__id=id)
@@ -215,7 +223,7 @@ class CategoryView(generics.ListAPIView):
         return Discount.objects.filter(product__category=category, begins__lte=date.today(), ends__gt=date.today())
 
     def get(self,request, *args, **kwargs):
-        category = self.serializer_class(self.get_queryset(), context={"request": request}, many=True)
+        category = self.serializer_class(self.get_queryset(), many=True)
         discounts = self.serializer_class_discounts(self.get_queryset_discounts(), many=True)
         return Response({
             'result': category.data,

@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure-3i^v%2@i2s)boo-f)^jbj8gffi!h*6hcz0^dkluq1io6*4#lsh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.242']
+ALLOWED_HOSTS = ['127.0.0.1', 'api.ecommerce.martyngodlewski.com', 'ecommerce.martyngodlewski.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -40,9 +40,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://ecommerce.martyngodlewski.com',
+    'https://api.ecommerce.martyngodlewski.com' 
+]
+
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://localhost:4000'
+    'https://ecommerce.martyngodlewski.com',
+    'https://api.ecommerce.martyngodlewski.com'
 ]
 
 REST_FRAMEWORK = {
@@ -78,7 +83,7 @@ DATABASES = {
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
         'HOST': 'db',
-        'PORT': 5432,
+        'PORT': 5450,
     }
 }
 

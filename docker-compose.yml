@@ -1,17 +1,20 @@
-version: "3.9"
+version: '3.9'
 
 services:
   db:
     image: postgres
     volumes:
       - ./data/db:/var/lib/postgresql/data
+    ports:
+    - "5450:5450"
+    command: -p 5450
   backend:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8003
     volumes:
       - .:/app
     ports:
-      - "8000:8000"
+      - "8003:8003"
     depends_on:
       - db
   frontend:

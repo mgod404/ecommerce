@@ -74,9 +74,9 @@ class MostPopularProductsOrderedSerializer(serializers.Serializer):
 
     def get_product__picture(self, obj):
         picture_name = obj['product__picture']
-        request = self.context['request']
-        host = request.build_absolute_uri('/')
-        url = f'{host}media/{picture_name}'
+        # request = self.context['request']
+        # host = request.build_absolute_uri('/')
+        url = f'/media/{picture_name}'
         return url
 
     def get_in_stock(self, obj):

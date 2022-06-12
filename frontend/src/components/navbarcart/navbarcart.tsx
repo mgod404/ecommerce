@@ -8,6 +8,7 @@ import {NavDropdown,Button, Image, FormControl, InputGroup, DropdownButton } fro
 import './navbarcart.scss'
 
 import { CartInterface } from "../../pages/order/order"
+import { HOST_URL } from "../../CONFIG"
 
 const NavbarCartComponent = () => {
     const {cart, removeProductFromCart, setProductQuantity} = useContext(CartContext);
@@ -29,7 +30,7 @@ const NavbarCartComponent = () => {
                     <div className='d-flex'>
                         <Image 
                             onClick={() => navigate(`/p/${product.id}`)}
-                            src={product.picture} 
+                            src={`${HOST_URL}${product.picture}`} 
                             width='30rem' 
                             height='30rem'/>
                     </div>

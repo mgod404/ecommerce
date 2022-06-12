@@ -5,6 +5,7 @@ import { Card, Row, Col } from "react-bootstrap"
 import './product.scss'
 
 import { ProductInterface } from '../../pages/category/category'
+import { HOST_URL } from "../../CONFIG"
 
 type StringDictionary = {
     [key: string]: string[]
@@ -54,7 +55,7 @@ const Product = (props: Props) => {
 
     return props.isDesktopScreen ? (
             <Card onClick={() => navigate(`/p/${props.data.id}`)} className='on-hover-desktop'>
-                <Card.Img src={props.data.picture}/>
+                <Card.Img src={`${HOST_URL}${props.data.picture}`}/>
                 <Card.Body className='d-flex flex-column max-height-desktop'>
                     <Card.Title className='product-card-body overflow-hidden'>{props.data.brand} {props.data.model}</Card.Title>
                         <div className='product-card-body pb-2'>{getProductOptions(props.data.options)}</div>
@@ -88,7 +89,7 @@ const Product = (props: Props) => {
             onClick={() => navigate(`/p/${props.data.id}`)}
             className='d-flex flex-row on-hover-mobile'>
                     <Card.Img 
-                        src={props.data.picture}  
+                        src={`${HOST_URL}${props.data.picture}`}
                         style={{height:'10rem', width:'12rem'}}
                         />
                     <Card.Body>
