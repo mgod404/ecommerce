@@ -19,7 +19,9 @@ const CheckPaymentStatusComponent: React.FC<Props> = (props) => {
         const data = await response.json();
         if (data.order_state === "PAYMENT_RECEIVED"){
             setOrderState(data.order_state);
-            clearCart();
+            if(clearCart){
+                clearCart();
+            }
             clearInterval(interval);
         }
     } 

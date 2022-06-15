@@ -2,54 +2,64 @@ import { useContext } from "react"
 
 import { CartContext } from "../../contexts/CartContext"
 import { IsDesktopScreenContext } from "../../contexts/IsDesktopScreenContext"
+import { ProductInterface } from "../../contexts/CartContext"
 
 import { Button } from "react-bootstrap"
 import './addtocardbttn.scss'
 
-type StringDictionary = {
-    [key: string]: string[];
-}
-interface data{
-    id: number,
-    category?: string,
-    model: string,
-    options: StringDictionary,
-    price: number,
-    picture: string,
-}
 interface Props {
     discountedPrice?: string,
-    data: data,
+    data: ProductInterface,
     id: any,
 }
 
 const AddToCardBttnComponent: React.FC<Props> = (props) => {
     const { addToCart } = useContext(CartContext); 
-    const {isDesktopScreen} = useContext(IsDesktopScreenContext);
+    const isDesktopScreen = useContext(IsDesktopScreenContext);
 
-    const addToCartData = () => {
+    const addToCartData = (): ProductInterface => {
         if(!props.discountedPrice){
-            return props.data
+            return {
+                id: props.data.id,
+                picture: props.data.picture,
+                brand: props.data.brand,
+                model: props.data.model,
+                price: props.data.price,
+            }
         } else {
-            return {...props.data, price: props.discountedPrice}
+            return {
+                id: props.data.id,
+                picture: props.data.picture,
+                brand: props.data.brand,
+                model: props.data.model,
+                price: props.discountedPrice as unknown as number
+            }
         }
     }
 
     return(
         isDesktopScreen? (
-        <Button variant="primary" 
+        <Button 
+                data-testid="addtocardbttndesk"
+                variant="primary" 
                 className='mt-auto' 
                 onClick={(event: React.MouseEvent<HTMLButtonElement>) =>{
                     event.stopPropagation();
-                    addToCart(addToCartData());
+                    if(addToCart){
+                        addToCart(addToCartData());
+                    }
                 }}>Add To Cart
         </Button>
         ) : (
-        <Button variant="primary" 
+        <Button 
+                data-testid="addtocardbttnmob"
+                variant="primary" 
                 className='mt-auto' 
                 onClick={(event: React.MouseEvent<HTMLButtonElement>) =>{
                     event.stopPropagation();
-                    addToCart(addToCartData());
+                    if(addToCart){
+                        addToCart(addToCartData());
+                    }
                 }}><i className="bi bi-cart-plus"></i>
         </Button>
         )

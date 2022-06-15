@@ -1,4 +1,4 @@
-import { React, useState, useContext } from "react"
+import { useState, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 
 import "bootstrap-icons/font/bootstrap-icons.css"
@@ -9,10 +9,29 @@ import FilterComponent from "../filter/filter"
 
 import { IsDesktopScreenContext } from "../../contexts/IsDesktopScreenContext"
 
-const NavbarComponent = (props) => {
+
+export interface SearchParam {
+    name: string,
+    value: string
+}
+interface ProductFiltersInterface {
+    brand__in: string[]|null,
+    price_max: number|null,
+    price_min: number|null,
+    ordering: string|null
+}
+interface Props {
+    category?: string,
+    productFilters?: ProductFiltersInterface,
+    setProductFilters?: React.Dispatch<React.SetStateAction<ProductFiltersInterface>>,
+    fetchProducts?: () => Promise<void>,
+    searchParams?: [] | SearchParam[],
+    setSearchParams?: React.Dispatch<React.SetStateAction<[] | SearchParam[]>>
+}
+const NavbarComponent = (props:Props) => {
     const navigate = useNavigate();
     const [filterTrigger, setFilterTrigger] = useState(false);
-    const {isDesktopScreen} = useContext(IsDesktopScreenContext);
+    const isDesktopScreen = useContext(IsDesktopScreenContext);
 
     return(
         <Navbar bg="dark" variant="dark" >
@@ -29,7 +48,7 @@ const NavbarComponent = (props) => {
                     </NavDropdown>
                 )}
             <Nav className='justify-content-end'>
-                {props.category ? 
+                {props.category && props.setProductFilters && props.productFilters && props.fetchProducts && props.searchParams && props.setSearchParams? 
                     <div>
                         <Button variant="outline-secondary" onClick={() => setFilterTrigger(true)}>Filter</Button>
                         <FilterComponent 
@@ -42,7 +61,7 @@ const NavbarComponent = (props) => {
                             searchParams={props.searchParams}
                             setSearchParams={props.setSearchParams}
                         />
-                    </div> : ''}
+                    </div> : <div></div>}
                 <NavbarCartComponent/>
             </Nav>
         </Container>

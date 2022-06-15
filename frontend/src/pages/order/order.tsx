@@ -7,7 +7,7 @@ import './order.scss'
 
 import { HOST_URL, API_URL } from "../../CONFIG"
 
-import { ProductInterface } from "../../pages/category/category"
+import { ProductInterface } from "../../contexts/CartContext"
 
 export interface CartInterface extends ProductInterface{
     quantity: number
@@ -15,12 +15,14 @@ export interface CartInterface extends ProductInterface{
 
 const OrderComponent = () => {
     const navigate = useNavigate();
-    const {cart, setProductQuantity, removeProductFromCart, clearCart} = useContext(CartContext);
+    const {cart, setProductQuantity, removeProductFromCart} = useContext(CartContext);
     const [alert, setAlert] = useState('');
 
     const countTotal = () => {
         let sum = 0;
-        cart.forEach((element:CartInterface) => sum = sum + (element.quantity * element.price));
+        if(!cart) return
+        cart.forEach((element:ProductInterface) =>  element.quantity && element.price ?
+                                                    sum = sum + (element.quantity * element.price): sum);
         return sum
     }
 
@@ -42,7 +44,8 @@ const OrderComponent = () => {
         setForm({...form, acceptedTerms:false});
 
     const postCart = async (orderId:number) => {
-        const requestCart = cart.map((product:CartInterface) => ({order:orderId, quantity: product.quantity, product: product.id}))
+        if(!cart) return;
+        const requestCart = cart.map((product:ProductInterface) => ({order:orderId, quantity: product.quantity, product: product.id}))
         const response = await fetch(`${API_URL}/productordered/`, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
@@ -77,7 +80,7 @@ const OrderComponent = () => {
         <div className='d-flex flex-row justify-content-center'>
             <Col style={{maxWidth:'50rem'}}>
                 <Card className='my-3 border-bottom-0'>
-                    {cart !== 0 ? (cart.map((product:CartInterface, index:number) => (
+                    {cart && cart.length !== 0 ? (cart.map((product:ProductInterface, index:number) => (
                         <Card className='border-start-0 border-top-0 border-end-0' key={index}>
                             <Card.Body className='d-flex flex-row justify-content-between'>
                                     <div className='d-flex flex-fill align-content-center justify-content-center flex-wrap'>
@@ -107,7 +110,8 @@ const OrderComponent = () => {
                                                     return
                                                 }
                                                 if(e.target.value as unknown as number > 0){
-                                                    setProductQuantity(product.id, e.target.value);
+                                                    if(!setProductQuantity || !product.id || !e.target.value) return;
+                                                    setProductQuantity(product.id, e.target.value as unknown as number);
                                                     doc.innerText = '';
                                                     return
                                                 }
@@ -130,7 +134,9 @@ const OrderComponent = () => {
                                     <Button 
                                         className='bi bi-trash'
                                         onClick={() =>{ 
-                                            removeProductFromCart(product.id)}}>
+                                            if(!removeProductFromCart || !product.id) return;
+                                            removeProductFromCart(product.id);
+                                            }}>
                                     </Button>
                                     </div>
                             </Card.Body>

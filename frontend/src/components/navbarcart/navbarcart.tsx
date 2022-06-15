@@ -7,7 +7,7 @@ import "bootstrap-icons/font/bootstrap-icons.css"
 import {NavDropdown,Button, Image, FormControl, InputGroup, DropdownButton } from "react-bootstrap"
 import './navbarcart.scss'
 
-import { CartInterface } from "../../pages/order/order"
+import { ProductInterface } from "../../contexts/CartContext"
 import { HOST_URL } from "../../CONFIG"
 
 const NavbarCartComponent = () => {
@@ -16,16 +16,18 @@ const NavbarCartComponent = () => {
 
     const countTotal = () => {
         let sum = 0;
-        cart.forEach((element:CartInterface) => sum = sum + (element.quantity * element.price));
+        if(!cart) return;
+        cart.forEach((element:ProductInterface) =>  element.quantity && element.price ? 
+                                                    sum = sum + (element.quantity * element.price): sum);
         return sum
     };
 
     const navDropdownTitle = (<i className="bi bi-cart-plus"></i>);
 
     return(
-        cart.length !== 0 ? (
+        cart && cart.length !== 0 ? (
             <DropdownButton align='end' title={navDropdownTitle} className='dropdown-menu-end ms-2' style={{color:'yellow'}}>
-                {cart.map((product:CartInterface,index:number) => (
+                {cart.map((product:ProductInterface,index:number) => (
                 <NavDropdown.Item className='d-flex flex-row justify-content-center align-items-center' key={index}>
                     <div className='d-flex'>
                         <Image 
@@ -47,7 +49,8 @@ const NavbarCartComponent = () => {
                             placeholder={product.quantity as unknown as string}
                             onClick={(e:React.MouseEvent<HTMLInputElement>) => e.stopPropagation()}
                             onChange={(e:React.ChangeEvent<HTMLInputElement>) =>{
-                                setProductQuantity(product.id, e.target.value);
+                                if(!product.id || !setProductQuantity) return;
+                                setProductQuantity(product.id, e.target.value as unknown as number);
                                 e.target.value = '';
                             }}
                             min="1"
@@ -64,6 +67,7 @@ const NavbarCartComponent = () => {
                             style={{width:'3rem'}}
                             onClick={(e:React.MouseEvent<HTMLButtonElement>) =>{
                                 e.stopPropagation();
+                                if(!removeProductFromCart || !product.id) return;
                                 removeProductFromCart(product.id)}}>
                         </Button>
                     </div>

@@ -37,14 +37,20 @@ interface  ProductData{
     result: ProductInterface[],
     discounts: Discount[]
 }
+export interface ProductFiltersInterface {
+    brand__in: string[]|null,
+    price_max: number|null,
+    price_min: number|null,
+    ordering: string|null
+}
 const Category: React.FC<Props> = (props) => {
-    const {isDesktopScreen} = useContext(IsDesktopScreenContext);
+    const { isDesktopScreen } = useContext(IsDesktopScreenContext);
     const [productData, setProductData] = useState<ProductData>();
-    const [productFilters, setProductFilters] = useState({
-        'brand__in': [],
-        'price_max': '',
-        'price_min': '',
-        'ordering':''
+    const [productFilters, setProductFilters] = useState<ProductFiltersInterface>({
+        brand__in: [],
+        price_max: null,
+        price_min: null,
+        ordering:''
     });
     const [searchParams, setSearchParams] = useState<SearchParam[] | []>([]);
 
@@ -113,7 +119,7 @@ const Category: React.FC<Props> = (props) => {
                     defaultValue=''
                     onChange={sortProducts}
                     >
-                    <option value=''></option>
+                    <option value=''/>
                     <option value='price'>Price - Ascending</option>
                     <option value='-price'>Price - Descending</option>
                 </Form.Select>

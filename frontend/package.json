@@ -58,6 +58,7 @@
     ]
   },
   "devDependencies": {
+    "react-test-renderer": "^18.1.0",
     "sass": "^1.52.2"
   },
   "overrides": {

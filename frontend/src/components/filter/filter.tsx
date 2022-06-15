@@ -16,18 +16,18 @@ interface CategoryFilters{
     options: StringDictionary,
     category: string
 }
-interface ProductFilters {
-    brand__in?: string[];
-    price_max?: string;
-    price_min?: string;
-    ordering?: string;
+interface ProductFiltersInterface {
+    brand__in: string[]|null,
+    price_max: number|null,
+    price_min: number|null,
+    ordering: string|null
 }
-interface Props {
+export interface Props {
     category: string,
     filterTrigger: boolean,
     setFilterTrigger:React.Dispatch<React.SetStateAction<boolean>>,
-    setProductFilters:React.Dispatch<React.SetStateAction<ProductFilters>>, 
-    productFilters: ProductFilters,
+    setProductFilters:React.Dispatch<React.SetStateAction<ProductFiltersInterface>>, 
+    productFilters: ProductFiltersInterface,
     fetchProducts: () => Promise<void>,
     searchParams: SearchParam[],
     setSearchParams: React.Dispatch<React.SetStateAction<SearchParam[]>>
@@ -179,7 +179,7 @@ const FilterComponent = (props: Props) => {
                     </div>
             </Card>
         </div>
-    ) : '');
+    ) : <div></div>);
 }
 
 export default FilterComponent

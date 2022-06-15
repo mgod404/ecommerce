@@ -14,5 +14,3 @@ RUN npm install -g serve
 
 # add app
 COPY . ./
-
-RUN npm run build

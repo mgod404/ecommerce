@@ -6,7 +6,7 @@ import { CartContext } from "../../contexts/CartContext"
 import { Card } from "react-bootstrap"
 import './payment.scss'
 import CheckPaymentStatusComponent from "../../components/checkpaymentstatus/checkpaymentstatus"
-import { CartInterface } from "../order/order"
+import { ProductInterface } from "../../contexts/CartContext"
 
 
 const PaymentComponent = () => {
@@ -16,11 +16,13 @@ const PaymentComponent = () => {
 
     const countTotal = () => {
         let sum = 0;
-        cart.forEach((element:CartInterface) => sum = sum + (element.quantity * element.price));
+        if(!cart) return 0;
+        cart.forEach((element:ProductInterface) =>  element.quantity && element.price ?
+                                                    sum = sum + (element.quantity * element.price) : sum);
         return sum
     }
 
-    return (
+    return ( cart ? 
     <div className='d-flex flex-row justify-content-center'>
         <Card className='m-5 p-3'>
             { paypalButtonClicked && params.orderid ? 
@@ -48,13 +50,14 @@ const PaymentComponent = () => {
                                         }
                                     }
                                 },
-                                "items":  cart.map((element:CartInterface) => ({
+                                "items":  cart.map((element:ProductInterface) => 
+                                ({
                                     "name": `${element.brand} ${element.model}`,
                                     "unit_amount": {
                                         "currency_code": "EUR",
-                                        "value": element.price
+                                        "value": element.price ? element.price as unknown as string : 0 as unknown as string
                                     },
-                                    "quantity": element.quantity
+                                    "quantity": element.quantity ? element.quantity as unknown as string : 0 as unknown as string
                                 }))
                             }]
                         });
@@ -62,7 +65,7 @@ const PaymentComponent = () => {
                 />
             </PayPalScriptProvider>
         </Card>  
-    </div>
+    </div> : <div></div>
     )
 }
 

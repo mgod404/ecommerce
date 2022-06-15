@@ -4,7 +4,7 @@ import Category from './pages/category/category'
 import ProductDetails from './pages/productdetails/productdetails'
 import CartContextProvider from './contexts/CartContext'
 import OrderComponent from './pages/order/order'
-import IsDesktopContextProvider from './contexts/IsDesktopScreenContext.js'
+import IsDesktopContextProvider from './contexts/IsDesktopScreenContext'
 import PaymentComponent from './pages/payment/payment'
 
 function App() {

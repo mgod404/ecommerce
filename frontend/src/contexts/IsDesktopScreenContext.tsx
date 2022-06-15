@@ -1,8 +1,19 @@
 import {createContext, useState} from 'react'
 
-export const IsDesktopScreenContext = createContext();
+interface IsDesktopScreenContextInterface {
+    isDesktopScreen: boolean,
+    setIsDesktopScreen:  React.Dispatch<React.SetStateAction<boolean>>| null
+}
+interface Props {
+    children: React.ReactNode
+}
 
-const IsDesktopContextProvider = (props) => {
+export const IsDesktopScreenContext = createContext<IsDesktopScreenContextInterface>({
+    isDesktopScreen: false,
+    setIsDesktopScreen: null
+});
+
+const IsDesktopContextProvider = (props: Props) => {
     const mediaQuery = window.matchMedia('(min-width: 600px)');
     const [isDesktopScreen, setIsDesktopScreen] = useState(mediaQuery.matches);
     mediaQuery.onchange = (e) => {
