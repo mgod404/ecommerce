@@ -53,3 +53,8 @@ def send_payment_confirmation(order):
 docker-compose up
 ```
 
+## Test the project
+1. To test frontend app, in frontend folder:
+```bash
+npm run test
+```
