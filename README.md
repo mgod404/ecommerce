@@ -54,7 +54,7 @@ docker-compose up
 ```
 
 ## Test the project
-1. To test frontend app, in frontend folder:
+1. To test frontend app, in **ecommerce/frontend** folder:
 ```bash
 npm run test
 ```
