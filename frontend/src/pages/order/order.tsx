@@ -59,7 +59,6 @@ const OrderComponent = () => {
         }
     }
     const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
         try{
             const response = await fetch(`${API_URL}/neworder/`, {
                 method: 'POST',
@@ -73,7 +72,7 @@ const OrderComponent = () => {
         } catch (err){
             console.log(err);
         }
-        
+        e.preventDefault();
     }
 
     return(
@@ -83,10 +82,11 @@ const OrderComponent = () => {
                     {cart && cart.length !== 0 ? (cart.map((product:ProductInterface, index:number) => (
                         <Card className='border-start-0 border-top-0 border-end-0' key={index}>
                             <Card.Body className='d-flex flex-row justify-content-between'>
-                                    <div className='d-flex flex-fill align-content-center justify-content-center flex-wrap'>
+                                    <div className='image-size'>
                                         <Card.Img 
                                             src={`${HOST_URL}${product.picture}`} 
-                                            style={{width: '3rem', height:'3rem'}}/>
+                                            style={{width: '3pem', height:'3pem'}}
+                                            />
                                     </div>
                                     <div className='d-flex flex-fill align-content-center justify-content-center flex-wrap'>
                                         <Card.Text 
@@ -94,10 +94,10 @@ const OrderComponent = () => {
                                                 {product.brand} {product.model}
                                         </Card.Text>
                                     </div>
-                                    <div style={{width:'4rem'}} className='d-flex align-content-center justify-content-center flex-wrap mx-2'>
+                                    <div className='d-flex align-content-center justify-content-center flex-wrap mx-2 inputgroup-width'>
                                         <InputGroup className="d-flex align-content-center flex-wrap">
                                             <FormControl
-                                            style={{borderColor:'pink'}}
+                                            style={{borderColor:'pink', width:'1rem'}}
                                             placeholder={product.quantity?.toString()}
                                             type='number'
                                             min = '1'
